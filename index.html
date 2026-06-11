@@ -309,7 +309,14 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .task-row-input:focus { cursor: text; }
-  .task-row.is-expanded .task-row-input { white-space: normal; overflow: visible; text-overflow: unset; }
+  .task-full-text {
+    display: none; flex: 1; min-width: 0;
+    font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text);
+    white-space: normal; word-break: break-word; line-height: 1.4;
+  }
+  .task-wrapper.status-done .task-full-text { text-decoration: line-through; color: var(--text-dim); }
+  body.locked .task-row.is-expanded .task-row-input { display: none; }
+  body.locked .task-row.is-expanded .task-full-text { display: block; }
   .task-row.is-expanded .task-row-responsible { max-width: none; white-space: normal; overflow: visible; text-overflow: unset; }
   .task-row-input::placeholder { color: var(--text-dim); }
   .task-wrapper.status-done .task-row-input { text-decoration: line-through; color: var(--text-dim); }
@@ -1620,6 +1627,7 @@ function renderTask(blockId, dirId, task) {
                placeholder="Задача..." value="${esc(task.text)}"
                data-focus-id="task-text-${task.id}"
                oninput="updateTaskText('${blockId}','${dirId}','${task.id}',this.value)">
+        <span class="task-full-text">${esc(task.text)}</span>
         ${responsible ? `<span class="task-row-responsible">${esc(responsible)}</span>` : ''}
         <span class="task-row-status${overdue?' is-overdue':''}">${overdue ? 'просрочено' : labels[task.status]}</span>
         <span class="task-row-chevron${expanded?' open':''}" id="chev-${task.id}">▾</span>
