@@ -309,6 +309,8 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .task-row-input:focus { cursor: text; }
+  .task-row.is-expanded .task-row-input { white-space: normal; overflow: visible; text-overflow: unset; }
+  .task-row.is-expanded .task-row-responsible { max-width: none; white-space: normal; overflow: visible; text-overflow: unset; }
   .task-row-input::placeholder { color: var(--text-dim); }
   .task-wrapper.status-done .task-row-input { text-decoration: line-through; color: var(--text-dim); }
 
