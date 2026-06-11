@@ -309,15 +309,8 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .task-row-input:focus { cursor: text; }
-  .task-full-text {
-    display: none; flex: 1; min-width: 0;
-    font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text);
-    white-space: normal; word-break: break-word; line-height: 1.4;
-  }
-  .task-wrapper.status-done .task-full-text { text-decoration: line-through; color: var(--text-dim); }
-  body.locked .task-row.is-expanded .task-row-input { display: none; }
-  body.locked .task-row.is-expanded .task-full-text { display: block; }
   .task-row.is-expanded .task-row-responsible { max-width: none; white-space: normal; overflow: visible; text-overflow: unset; }
+  .task-detail-title { display: none; }
   .task-row-input::placeholder { color: var(--text-dim); }
   .task-wrapper.status-done .task-row-input { text-decoration: line-through; color: var(--text-dim); }
 
@@ -577,6 +570,13 @@
     /* Task detail */
     .task-detail { padding: 6px 10px 6px 22px; }
     .detail-inline { gap: 8px; }
+    .task-detail-title {
+      display: block;
+      font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 600;
+      color: var(--text); line-height: 1.45; word-break: break-word;
+      padding-bottom: 7px; margin-bottom: 6px; border-bottom: 1px solid var(--border);
+    }
+    .task-wrapper.status-done .task-detail-title { text-decoration: line-through; color: var(--text-dim); }
   }
 
   /* ── Print / PDF ── */
@@ -1627,12 +1627,12 @@ function renderTask(blockId, dirId, task) {
                placeholder="Задача..." value="${esc(task.text)}"
                data-focus-id="task-text-${task.id}"
                oninput="updateTaskText('${blockId}','${dirId}','${task.id}',this.value)">
-        <span class="task-full-text">${esc(task.text)}</span>
         ${responsible ? `<span class="task-row-responsible">${esc(responsible)}</span>` : ''}
         <span class="task-row-status${overdue?' is-overdue':''}">${overdue ? 'просрочено' : labels[task.status]}</span>
         <span class="task-row-chevron${expanded?' open':''}" id="chev-${task.id}">▾</span>
       </div>
       <div class="task-detail" id="detail-${task.id}" style="display:${expanded?'block':'none'}">
+        <div class="task-detail-title">${esc(task.text)}</div>
         <div class="detail-inline">
           <div class="detail-group">
             <button class="history-toggle-btn${histOpen?' open':''}" id="hist-btn-${task.id}"
