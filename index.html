@@ -529,6 +529,47 @@
   .undo-btn:hover { background: #8ab800; }
   .undo-shortcut { font-size: 8px; color: #6a6050; }
 
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .app { padding: 16px 12px 60px; }
+
+    /* Header — compact 2-line layout */
+    .header { flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding-bottom: 14px; }
+    .header-text p { display: none; }
+    .header-text h1 { font-size: 13px; }
+    .logo { width: 36px; height: 36px; }
+    .header-stats { margin-left: 0; padding-left: 12px; gap: 12px; }
+    .stat-value { font-size: 16px; }
+    .stat-label { font-size: 7px; }
+    .header-actions { gap: 6px; }
+    .header-actions .btn-ghost { display: none; } /* скрыть ▼Все ▲Все */
+    .header-actions .btn-primary { padding: 6px 10px; font-size: 9px; }
+
+    /* Filter bar */
+    .filter-bar { gap: 7px; padding: 8px 10px; }
+    .filter-divider { display: none; }
+    .filter-btns { flex-wrap: wrap; gap: 3px; }
+    .filter-btn { font-size: 7px; padding: 4px 7px; }
+    .filter-select { font-size: 8px; max-width: 160px; }
+
+    /* Blocks & directions */
+    .block { margin: 0; }
+    .block-header { padding: 10px 12px; }
+    .block-title-input { font-size: 12px; }
+    .direction-header { padding: 7px 10px; }
+    .direction-title-input { font-size: 10px; }
+
+    /* Task rows — скрыть ответственного, дать место тексту */
+    .task-row { padding: 10px 10px; gap: 7px; }
+    .task-row-input { font-size: 11px; }
+    .task-row-responsible { display: none; }
+    .task-row-status { font-size: 7px; }
+
+    /* Task detail */
+    .task-detail { padding: 6px 10px 6px 22px; }
+    .detail-inline { gap: 8px; }
+  }
+
   /* ── Print / PDF ── */
   @media print {
     @page { size: A4 portrait; margin: 15mm; }
@@ -692,26 +733,39 @@
 const STORAGE_KEY = 'g8-tracker-v1';
 function genId() { return Math.random().toString(36).slice(2, 10); }
 
-// ── Initial data (loaded on first run when localStorage is empty) ─────────────
+// ── Initial data fallback ─────────────────────────────────────────────────────
 function getInitialData() {
   return {"blocks":[{"id":"i020","title":"КОНКУРС","collapsed":false,"color":"#7a9e00","directions":[{"id":"i001","title":"Жюри","description":"","collapsed":false,"tasks":[{"id":"i002","text":"Собрать все составы жюри","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-15","log":[]},{"id":"i003","text":"Собрать все фотографии жюри, обработать, выложить на сайт","status":"in-progress","responsible":["Катя Лепёшкина"],"deadline":"2026-06-16","log":[]},{"id":"i005","text":"Подготовить гайдбук для жюри","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-19","log":[]},{"id":"i006","text":"Подготовить чаты с жюри","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-06-19","log":[]},{"id":"hmctlz5n","text":"Закрепить стажеров за категориями и сделать мини-инструкцию","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-06-19","log":[]},{"id":"26ii47pl","text":"Подготовить протоколы жюрения","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-06-19","log":[]}]},{"id":"i009","title":"Тайминг конкурса","description":"","collapsed":false,"tasks":[{"id":"ezlqtrwq","text":"Подключить международный эквайринг и эквайринг для кино","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-19","log":[]},{"id":"i010","text":"Запланировать жюрение","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-08-01","log":[]},{"id":"06jfl9w3","text":"Поменять даты в FestAgent до продления ","status":"todo","responsible":[],"deadline":"2026-07-30","log":[]}]},{"id":"i013","title":"Производство статуэток и дипломов","description":"","collapsed":false,"tasks":[{"id":"ppnjs9pd","text":"Решить по производству","status":"in-progress","responsible":["Виталик Быков","Паша Череванин"],"deadline":"","log":[{"date":"27.05.2026 10:36","text":"Не идем в 3D Studio, узнать возможен ли частичный бартер с Илико"},{"date":"09.06.2026 09:51","text":"С Илико частичный бартер невозможен, считаем с 3D Studio, возможно там будет сильно дешевле. Работаем без бартера."}]},{"id":"wnukmfdb","text":"Решить по второму и третьему месту ","status":"todo","responsible":["Паша Череванин","Виталик Быков"],"deadline":"2026-06-26","log":[{"date":"27.05.2026 10:37","text":"Узнать – можно ли дешево сделать малюсенькие статуэтки. Как вариант – медаль с лентой"}]},{"id":"ue0k7cim","text":"Произвести статуэтки","status":"todo","responsible":["Паша Череванин","Леша Гасанов"],"deadline":"2026-06-30","log":[]},{"id":"kricfpk0","text":"Запланировать производство дипломов","status":"todo","responsible":["Леша Гасанов"],"deadline":"2026-07-10","log":[]}]},{"id":"i016","title":"Сайт","description":"","collapsed":false,"tasks":[{"id":"i017","text":"Workflow по общимм задачам","status":"todo","responsible":["Паша Череванин"],"deadline":"","log":[{"date":"09.06.2026 09:54","text":"Идет разработка жюрения, планируем закончить к 19 июля."}]},{"id":"yqcaacjc","text":"Подготовить наглядную программу на сайт по типу лендинга","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-26","log":[{"date":"09.06.2026 09:55","text":"Поставить задачу для разработчиков"}]},{"id":"aw9t9get","text":"Подготовить отдельную страницу для спикеров по типу жюри","status":"in-progress","responsible":[],"deadline":"2026-06-26","log":[{"date":"09.06.2026 09:56","text":"Поставить задачу для разработчиков"}]}]},{"id":"tbnp048h","title":"Коммуникация с участниками конкурса","description":"","collapsed":false,"tasks":[{"id":"ifze8fx0","text":"Day 2 Day ","status":"todo","responsible":["Мария Голова","Паша Череванин"],"deadline":"","log":[]},{"id":"i012","text":"Запланировать приглашение на очную презентацию Ивентов","status":"todo","responsible":["Ия Гаврик"],"deadline":"2026-08-21","log":[]},{"id":"i011","text":"Запланировать приглашение шортов на церемонию","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-08-21","log":[]}]}]},{"id":"i036","title":"ФЕСТИВАЛЬ","collapsed":false,"color":"#d4920a","directions":[{"id":"3ai2xx1l","title":"ПРОГРАММА","description":"","collapsed":false,"tasks":[{"id":"d8i4zarn","text":"Формирование программы ","status":"in-progress","responsible":["Виталик Быков","Машер Казанова"],"deadline":"","log":[{"date":"27.05.2026 10:45","text":"Добиваем остатки секций, ставим мотивационные созвоны с кураторами и спикерами."}]},{"id":"t8n1s2yz","text":"Получить темы от спикеров до 1 июля","status":"in-progress","responsible":["Машер Казанова"],"deadline":"2026-07-01","log":[]},{"id":"4meg3pnd","text":"Яркое открытие Фестиваля в Бойлерной","status":"in-progress","responsible":["Виталик Быков","Артур Матусов","Катя Лобова","Машер Казанова"],"deadline":"2026-06-24","log":[{"date":"10.06.2026 10:18","text":"Продумать концепцию: кофе-брейк от партнеров и шоу-открытие"},{"date":"10.06.2026 10:26","text":"В начале недели – брейншторм"}]},{"id":"7wcoez40","text":"Выложить всех спикеров на сайт","status":"in-progress","responsible":["Катя Лепёшкина"],"deadline":"2026-06-18","log":[]}]},{"id":"i021","title":"Площадки","description":"","collapsed":false,"tasks":[{"id":"i022","text":"Подписать документы ","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-13","log":[{"date":"26.05.2026 13:57","text":"Внутри, Эви и Simple Music подписаны, остались Бойлерная, Котельная и Гостиная"}]}]},{"id":"i023","title":"Ивент-команда","description":"","collapsed":false,"tasks":[{"id":"orkw22m5","text":"Найти технического директора","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-26","log":[]},{"id":"j9pjq91n","text":"Освоение площадки","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"db6dfkci","text":"Определить карту потенциальных бренд–зон","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"i024","text":"Зафиналить договоренности с Оксаной","status":"done","responsible":["Паша Череванин"],"deadline":"2026-06-05","log":[]}]},{"id":"kxg6wvez","title":"Детали по ивенту","description":"","collapsed":false,"tasks":[{"id":"o3xjmf46","text":"МЧС, Префектура ","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-07-31","log":[{"date":"09.06.2026 10:06","text":"Направить документы в инстанции"}]},{"id":"thmo69yc","text":"Разработка навигации","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-08-06","log":[]},{"id":"s52dpxla","text":"Брифинг фотографов","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-08-20","log":[]},{"id":"6ynoi60k","text":"Согласование ведущих","status":"in-progress","responsible":["Машер Казанова"],"deadline":"2026-07-17","log":[{"date":"27.05.2026 11:01","text":"Подписать документы"}]},{"id":"asi6o9go","text":"Подготовка графики ивента","status":"todo","responsible":["Катя Зеленкова"],"deadline":"2026-07-30","log":[]}]},{"id":"ckyrb1gk","title":"Dreamlaser","description":"","collapsed":false,"tasks":[{"id":"ovnt507n","text":"Получить концепт и смету","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-17","log":[]},{"id":"ziyg2gy3","text":"Подписать документы ","status":"todo","responsible":["Паша Череванин"],"deadline":"2026-07-16","log":[]}]},{"id":"i025","title":"Афтепати","description":"","collapsed":false,"tasks":[{"id":"a8h55n3p","text":"Утвердить механику взаимодействия с клубом ","status":"in-progress","responsible":["Виталик Быков"],"deadline":"2026-06-26","log":[]},{"id":"i026","text":"Лайнап","status":"in-progress","responsible":["Виталик Быков"],"deadline":"2026-06-26","log":[{"date":"27.05.2026 11:01","text":"Согласовали лайнап"}]},{"id":"f2rspadn","text":"Подготовить документы ","status":"in-progress","responsible":["Паша Череванин"],"deadline":"","log":[]},{"id":"i027","text":"Бесплатный вход","status":"done","responsible":[],"deadline":"","log":[]}]},{"id":"i028","title":"Церемония награждения","description":"","collapsed":false,"tasks":[{"id":"8fy20966","text":"Согласование сценария","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-06-26","log":[]},{"id":"p39itgdr","text":"Подготовка видео победителей ","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"7dhc1vyp","text":"Подготовка графики","status":"todo","responsible":["Катя Зеленкова"],"deadline":"2026-07-30","log":[]},{"id":"5jkcd2w8","text":"Интеграция партнеров и спонсоров","status":"todo","responsible":["Катя Лепёшкина"],"deadline":"2026-08-21","log":[]},{"id":"i029","text":"Выбор режиссера","status":"done","responsible":[],"deadline":"","log":[]}]},{"id":"i030","title":"Промо-коды","description":"","collapsed":false,"tasks":[{"id":"i031","text":"Подготовить промо–коды","status":"done","responsible":["Паша Череванин"],"deadline":"","log":[]}]},{"id":"jqs46p73","title":"Ярмарка Современного искусства – Александр Тито ","description":"","collapsed":false,"tasks":[{"id":"68b50k6c","text":"Разработать совместно с Сашей концепцию Ярмарки ","status":"in-progress","responsible":["Машер Казанова","Виталик Быков"],"deadline":"","log":[{"date":"10.06.2026 10:45","text":"Сделали презентацию по проекту"},{"date":"10.06.2026 10:45","text":"Виталик с презой пойдет к спонсорам и площадкой"}]},{"id":"ah3c4czr","text":"Определиться с сетапом и бюджетом на Флаконе","status":"todo","responsible":[],"deadline":"","log":[]}]},{"id":"i032","title":"Выставка интерьерного дизайна – Степа Бугаев","description":"","collapsed":false,"tasks":[{"id":"i033","text":"Решить с Dreamlaser – можем ли мы взять вторую комнату в Бойлерной","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"pvut8kb3","text":"Сделать освоение площадкой","status":"todo","responsible":[],"deadline":"","log":[]}]},{"id":"i034","title":"Архитектурный квиз – Мегабудка","description":"","collapsed":false,"tasks":[{"id":"i035","text":"Получить мехнику","status":"in-progress","responsible":["Машер Казанова","Виталик Быков"],"deadline":"2026-06-19","log":[]}]},{"id":"mrppzrnj","title":"Онлайн–трансляция – Brocast","description":"","collapsed":false,"tasks":[{"id":"zb13qi3n","text":"Планирование работы ","status":"in-progress","responsible":["Паша Череванин"],"deadline":"","log":[{"date":"09.06.2026 10:47","text":"1. Олег смотрит рилс бос\n2. Если все ок, мне нужно ТЗ для них, что нам надо получить\n3. По деньгам остаемся в тех же условиях (Паш, они у нас где-то зафиксированы?)\n4. Пробуем после 15 июня с Соней @sgofina засинхрониться по пиару\n5. Я пытаюсь связаться через АКИ с другими регионами и агентствами креативных индустрий"}]}]},{"id":"fgbxlcpq","title":"Бюро Глагол","description":"","collapsed":false,"tasks":[{"id":"jqd77pmb","text":"Делают зал ","status":"in-progress","responsible":[],"deadline":"","log":[{"date":"27.05.2026 11:05","text":"Пока дали 1 спикера для тренинга, потому что нет продаж выступлений за деньги."}]}]},{"id":"wcuv5ll4","title":"VIP – Эви ","description":"","collapsed":false,"tasks":[]},{"id":"ehjhn1qp","title":"Работа с контентом","description":"","collapsed":false,"tasks":[]},{"id":"x6j4yllz","title":"Издательское дело","description":"","collapsed":false,"tasks":[{"id":"5lrn36bg","text":"Договорились о корнере на входе в Котельную","status":"todo","responsible":[],"deadline":"","log":[]}]}]},{"id":"i048","title":"СПОНСОРЫ","collapsed":false,"color":"#9b5ea4","directions":[{"id":"i041","title":"Сбермаркетинг","description":"","collapsed":false,"tasks":[{"id":"3g4jp7ro","text":"Выполнить все условия по спонсорству","status":"in-progress","responsible":["Катя Лепёшкина"],"deadline":"","log":[]},{"id":"3aqusyey","text":"Подписать документы","status":"done","responsible":[],"deadline":"","log":[]}]},{"id":"i042","title":"Волковская","description":"","collapsed":false,"tasks":[{"id":"stdf6e6k","text":"Подписать документы","status":"in-progress","responsible":[],"deadline":"","log":[]}]},{"id":"i043","title":"LOOKY","description":"","collapsed":false,"tasks":[{"id":"awodrofp","text":"Подписать документы","status":"in-progress","responsible":["Артем Катков"],"deadline":"","log":[]}]},{"id":"q2dpbqpr","title":"Авито HR","description":"","collapsed":false,"tasks":[{"id":"73nfl8kn","text":"Согласовать документы","status":"in-progress","responsible":["Артем Катков"],"deadline":"2026-06-19","log":[]},{"id":"qvihadnl","text":"Cогласовать смету","status":"done","responsible":["Артем Катков"],"deadline":"","log":[]}]},{"id":"i046","title":"СБЕР","description":"","collapsed":false,"tasks":[{"id":"svqzlnnf","text":"Согласовать смету через Сбермаркетинг","status":"in-progress","responsible":["Паша Череванин"],"deadline":"","log":[]}]},{"id":"i047","title":"GPtunel","description":"","collapsed":false,"tasks":[{"id":"aqf06q49","text":"Cогласовать смету","status":"in-progress","responsible":[],"deadline":"","log":[]}]}]},{"id":"vffth1jl","title":"ПАРТНЕРЫ ","collapsed":false,"color":"#28d5e2","directions":[{"id":"fvwy80y5","title":"GIFF","description":"","collapsed":false,"tasks":[]},{"id":"ta4wzvyd","title":"SAlab_daily","description":"","collapsed":false,"tasks":[{"id":"rzhuvh7i","text":"Получить прототип интерактивной карты","status":"todo","responsible":[],"deadline":"","log":[]}]},{"id":"19emk2gq","title":"АКИ","description":"","collapsed":false,"tasks":[{"id":"mwo3qzx7","text":"Книжная ярмарка или питчинг","status":"todo","responsible":[],"deadline":"","log":[]}]},{"id":"1ocgcaxk","title":"Интелюр","description":"","collapsed":false,"tasks":[]},{"id":"2cc4yti6","title":"GG и G8 Park","description":"","collapsed":false,"tasks":[]}]},{"id":"i040","title":"ДИЗАЙН И МАТЕРИАЛЫ","collapsed":false,"color":"#e2fd69","directions":[{"id":"i037","title":"Моушен упаковка фестиваля от AVE","description":"","collapsed":false,"tasks":[{"id":"i038","text":"Получить концепцию и ролик","status":"in-progress","responsible":["Паша Череванин"],"deadline":"2026-07-08","log":[]},{"id":"i039","text":"Запланировать релиз ","status":"in-progress","responsible":["Соня Гофина"],"deadline":"2026-07-07","log":[]},{"id":"ns6gfmtx","text":"Подготовить открывающую графику для Фестиваля ","status":"todo","responsible":["Катя Зеленкова"],"deadline":"2026-07-30","log":[]},{"id":"fj76ik4b","text":"Подготовить графику (и заглушки) для онлайн–трансляции","status":"todo","responsible":["Катя Зеленкова"],"deadline":"2026-07-30","log":[]}]},{"id":"qwaessfi","title":"Карта/программа","description":"","collapsed":false,"tasks":[{"id":"0ceeami1","text":"Дополнять логотипами спонсоров и партнеров, а также актуализировать программу","status":"todo","responsible":["Катя Зеленкова"],"deadline":"","log":[]}]},{"id":"ku4shjr8","title":"Афтермуви от GR8","description":"","collapsed":false,"tasks":[{"id":"2hkmiava","text":"Забрифовать партнера","status":"todo","responsible":[],"deadline":"","log":[]}]}]},{"id":"i056","title":"КОММУНИКАЦИЯ","collapsed":false,"color":"#c07830","directions":[{"id":"hszzcvr8","title":"PR","description":"","collapsed":false,"tasks":[{"id":"q5oolz3r","text":"Ведение контент плана","status":"todo","responsible":["Соня Гофина"],"deadline":"","log":[]},{"id":"9e5hu9wh","text":"Решение проблемы малого охвата в СМИ для подачи работ","status":"todo","responsible":["Соня Гофина"],"deadline":"2026-06-19","log":[]},{"id":"8ynyae9o","text":"Посты у жюри о подачах работ","status":"todo","responsible":["Соня Гофина","Паша Череванин"],"deadline":"2026-07-23","log":[]}]},{"id":"i049","title":"Рассылка","description":"","collapsed":false,"tasks":[{"id":"i050","text":"Сделать контент–план по рассылке ","status":"in-progress","responsible":["Соня Гофина"],"deadline":"2026-06-18","log":[]},{"id":"70fyc2nb","text":"Директ сообщения пиарщицам победителей прошлых лет","status":"todo","responsible":["Соня Гофина","Паша Череванин"],"deadline":"2026-06-25","log":[]}]},{"id":"i051","title":"Рекламная кампания After Agency","description":"","collapsed":false,"tasks":[{"id":"i052","text":"Подготовка материалов и площадок","status":"in-progress","responsible":["Паша Череванин","Соня Гофина"],"deadline":"2026-06-17","log":[]},{"id":"i053","text":"Запуск и проведение","status":"in-progress","responsible":["Паша Череванин","Соня Гофина"],"deadline":"2026-06-23","log":[]},{"id":"i054","text":"Дополнительные фишки","status":"todo","responsible":["Паша Череванин"],"deadline":"","log":[{"date":"09.06.2026 11:15","text":"Делаем только если Афтер сами возьмутся"}]}]},{"id":"i055","title":"Интенсив Свята","description":"","collapsed":false,"tasks":[{"id":"csfx2x7x","text":"Провести интенсив и промо","status":"todo","responsible":["Соня Гофина"],"deadline":"2026-06-26","log":[]}]},{"id":"0yfi7xbx","title":"Рейтинг Рунета","description":"","collapsed":false,"tasks":[{"id":"fkhoyx04","text":"","status":"todo","responsible":[],"deadline":"","log":[]}]},{"id":"cw22nsvo","title":"Спецпроекты с участием жюри по категориям","description":"","collapsed":false,"tasks":[]},{"id":"0cccd1sr","title":"Информационные партнеры","description":"","collapsed":false,"tasks":[]}]},{"id":"i062","title":"ИНОЕ","collapsed":false,"color":"#8a7d68","directions":[{"id":"i057","title":"","description":"","collapsed":false,"tasks":[{"id":"i058","text":"Регистрация торгового знака","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"i059","text":"Рейтинг","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"xqx55n48","text":"Креатив дня","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"i060","text":"Чувак на диджитал поддержку и в жюри web https://blackmagic.digital/","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"sowvdowz","text":"Повышение стоимости","status":"todo","responsible":[],"deadline":"","log":[{"date":"26.05.2026 12:05","text":"– 1 апреля – 30 апреля             2 999 руб. – 1 мая – 30 мая                         3 999 руб. – 1 июля – 31 июля                     4 999 руб. – 1 августа – 31 августа            5 999 руб. – 1 сентября – 9 сентября        6 999 руб. – 10–11 сентября                        9 999 руб."}]},{"id":"ysu3y7z6","text":"Спонсорские отчеты ","status":"todo","responsible":[],"deadline":"","log":[]},{"id":"zc2vl5n6","text":"Лекторий","status":"todo","responsible":[],"deadline":"","log":[]}]},{"id":"uj9abfkr","title":"","description":"","collapsed":false,"tasks":[]}]}]};
 }
 
-function loadData() {
+async function loadData() {
+  if (editMode) {
+    try {
+      const r = localStorage.getItem(STORAGE_KEY);
+      if (r) {
+        const data = JSON.parse(r);
+        if (data.blocks && data.blocks.length > 0) return data;
+      }
+    } catch(e) {}
+  }
   try {
-    const r = localStorage.getItem(STORAGE_KEY);
-    if (r) {
-      const data = JSON.parse(r);
-      if (data.blocks && data.blocks.length > 0) return data;
+    const r = await fetch('data.json?v=' + Date.now());
+    if (r.ok) {
+      const data = await r.json();
+      if (data.blocks) return data;
     }
   } catch(e) {}
-  const initial = getInitialData();
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(initial)); } catch(e) {}
-  return initial;
+  return getInitialData();
 }
 function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); renderAll(); }
 
-let state = loadData();
+let state = { blocks: [] };
+
+async function init() {
+  state = await loadData();
+  renderAll();
+  applyLockState();
+}
 let filter = { responsible: 'all', status: 'all' };
 
 // ── Edit mode (password protection) ──────────────────────────────────────────
@@ -740,6 +794,10 @@ function toggleEditMode() {
     if (pwd === EDIT_PASSWORD) {
       editMode = true;
       sessionStorage.setItem('g8-edit-mode', '1');
+      try {
+        const r = localStorage.getItem(STORAGE_KEY);
+        if (r) { const d = JSON.parse(r); if (d.blocks?.length) { state = d; renderAll(); } }
+      } catch(e) {}
       applyLockState();
     } else if (pwd !== null) {
       alert('Неверный пароль');
@@ -1735,8 +1793,7 @@ function printPDF() {
   window.print();
 }
 
-renderAll();
-applyLockState();
+init();
 </script>
 </body>
 </html>
