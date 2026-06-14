@@ -1250,20 +1250,24 @@ function toggleAllTasksInDir(blockId, dirId) {
   if (!d) return;
   const ids = matchedTaskIds(d.tasks);
   if (!ids.length) return;
-  const allOpen = ids.every(id => expandedTasks.has(id) && openHistories.has(id));
+  const allOpen = ids.every(id => expandedTasks.has(id));
   if (!allOpen) expandDir(d);
   applyExpandAll(ids, !allOpen);
   if (!allOpen) saveData();
+  const btn = document.querySelector(`[data-dir="${dirId}"] .direction-header .expand-all-btn`);
+  if (btn) btn.textContent = allOpen ? 'раскрыть все' : 'скрыть все';
 }
 function toggleAllTasksInBlock(blockId) {
   const b = state.blocks.find(b => b.id === blockId);
   if (!b) return;
   const ids = matchedTaskIds(b.directions.flatMap(d => d.tasks));
   if (!ids.length) return;
-  const allOpen = ids.every(id => expandedTasks.has(id) && openHistories.has(id));
+  const allOpen = ids.every(id => expandedTasks.has(id));
   if (!allOpen) b.directions.forEach(d => { if (matchedTaskIds(d.tasks).length) expandDir(d); });
   applyExpandAll(ids, !allOpen);
   if (!allOpen) saveData();
+  const btn = document.querySelector(`[data-block="${blockId}"] > .block-header .expand-all-btn`);
+  if (btn) btn.textContent = allOpen ? 'раскрыть все' : 'скрыть все';
 }
 function editTaskTitle(taskId) {
   if (!editMode) { toggleTask(taskId); return; }
