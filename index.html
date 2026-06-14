@@ -83,7 +83,7 @@
   body.locked .log-add, body.locked .log-new-btn { display: none !important; }
   body.locked .log-edit-btn,
   body.locked .log-del-btn         { display: none !important; }
-  body.locked .block-color-swatch  { display: none !important; }
+  body.locked .color-swatch-btn  { display: none !important; }
   body.locked .detail-delete-btn   { display: none !important; }
   body.locked .btn-primary         { display: none !important; }
   body.locked .export-wrap .export-menu-item:last-child { display: none !important; } /* скрыть импорт */
@@ -150,61 +150,104 @@
   /* ── Blocks ── */
   .blocks-list { display: flex; flex-direction: column; gap: 20px; }
   .block {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-left: 5px solid var(--lime); box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
-  /* ── Block color swatch ── */
-  .block-color-swatch {
-    width: 18px; height: 18px; border-radius: 2px;
-    border: 2px solid rgba(0,0,0,0.15); cursor: pointer;
-    flex-shrink: 0; padding: 0; outline: none;
-    -webkit-appearance: none; appearance: none;
-    transition: border-color 0.15s;
+  /* ── Block color swatch button ── */
+  .color-swatch-btn {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.5);
+    cursor: pointer; flex-shrink: 0; padding: 0; outline: none;
+    transition: border-color 0.15s, transform 0.15s;
   }
-  .block-color-swatch:hover { border-color: rgba(0,0,0,0.35); }
-  .block-color-swatch::-webkit-color-swatch-wrapper { padding: 0; }
-  .block-color-swatch::-webkit-color-swatch { border: none; border-radius: 1px; }
+  .color-swatch-btn:hover { border-color: rgba(255,255,255,0.9); transform: scale(1.15); }
+
+  /* ── Color palette popup ── */
+  .color-palette-popup {
+    position: fixed; z-index: 2000;
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 8px; display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18); width: 168px;
+  }
+  .color-palette-swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+  .palette-swatch {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid transparent; cursor: pointer; padding: 0; outline: none;
+    transition: transform 0.12s, border-color 0.12s;
+  }
+  .palette-swatch:hover { transform: scale(1.18); border-color: rgba(0,0,0,0.3); }
+  .palette-swatch.active { border-color: rgba(0,0,0,0.55); transform: scale(1.08); box-shadow: 0 0 0 2px rgba(0,0,0,0.15); }
+  .palette-custom-row {
+    display: flex; align-items: center; gap: 6px;
+    border-top: 1px solid var(--border); padding-top: 6px;
+  }
+  .palette-custom-label { font-family: 'Unbounded', sans-serif; font-size: 9px; color: var(--text-dim); flex: 1; }
+  .palette-custom-input {
+    width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border);
+    padding: 0; cursor: pointer; outline: none; overflow: hidden;
+    -webkit-appearance: none; appearance: none; background: none;
+  }
+  .palette-custom-input::-webkit-color-swatch-wrapper { padding: 0; }
+  .palette-custom-input::-webkit-color-swatch { border: none; border-radius: 50%; }
+  .palette-custom-input::-moz-color-swatch { border: none; border-radius: 50%; }
   .block-header {
     display: flex; align-items: center; gap: 12px;
-    padding: 8px 18px; cursor: pointer; user-select: none; background: var(--bg4);
+    padding: 7px 14px; cursor: pointer; user-select: none;
+    background: var(--block-color, #D8CFBC);
+    transition: filter 0.15s;
   }
-  .block-header:hover { background: #cec6ba; }
+  .block-header:hover { filter: brightness(0.88); }
   .block-title-input {
     flex: 0 0 auto; margin-right: auto; min-width: 60px; max-width: 500px;
     background: transparent; border: none;
-    font-family: 'Unbounded', sans-serif; font-size: 14px; font-weight: 800;
-    color: var(--text); outline: none; cursor: text;
+    font-family: 'Unbounded', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--block-text, #2E2820); outline: none; cursor: text;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    letter-spacing: 0.05em;
   }
-  .block-title-input::placeholder { color: var(--text-dim); }
-  .block-chevron { color: var(--text-dim); font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
+  .block-title-input::placeholder { color: rgba(46,40,32,0.4); }
+  .block-chevron { color: var(--block-text-dim, rgba(46,40,32,0.58)); font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
   .block-chevron.open { transform: rotate(180deg); }
-  .block-progress { display: flex; align-items: center; gap: 8px; font-size: 9px; color: var(--text-dim); flex-shrink: 0; }
-  .progress-bar { width: 56px; height: 3px; background: var(--border); overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--lime); transition: width 0.3s; }
-  .block-body { padding: 0 16px 16px; }
+  .block-progress { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--block-text-dim, rgba(46,40,32,0.58)); flex-shrink: 0; }
+  .progress-bar { width: 56px; height: 3px; background: var(--block-bar-bg, rgba(0,0,0,0.18)); overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--block-bar-fill, rgba(0,0,0,0.42)); transition: width 0.3s; }
+  .block-body { padding: 0; }
 
   /* ── Directions ── */
-  .directions-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
-  .direction { background: var(--bg); border: 1px solid var(--border); border-left: 2px solid var(--border); }
+  .directions-list { display: flex; flex-direction: column; gap: 0; margin-top: 0; }
+  .direction { background: transparent; }
   .direction-header {
     display: flex; align-items: center; gap: 10px;
-    padding: 5px 12px; cursor: pointer; background: var(--bg2);
+    padding: 5px 14px; cursor: pointer; background: #E4DCC9;
   }
-  .direction-header:hover { background: #e0d9cd; }
+  .direction-header:hover { background: #D9D2BE; }
+  /* Обёртка направления — ширина = тексту, border-bottom = подчёркивание */
+  .dir-title-wrap {
+    display: inline-block; width: fit-content; max-width: 65%;
+    margin-right: auto;
+    position: relative; padding-bottom: 2px;
+    border-bottom: 1.5px solid var(--dir-underline, #7a9e00);
+  }
+  /* Ghost-span задаёт ширину обёртке */
+  .dir-ghost-text {
+    display: block; visibility: hidden; pointer-events: none;
+    white-space: nowrap;
+    font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 500;
+    line-height: 1;
+  }
+  /* Инпут поверх ghost-span */
   .direction-title-input {
-    flex: 1 1 0; min-width: 50px; max-width: 100%;
+    position: absolute; inset: 0; width: 100%; padding: 0; margin: 0;
     background: transparent; border: none;
-    font-family: 'Unbounded', sans-serif; font-size: 11px; font-weight: 600;
-    color: var(--text-dim); outline: none; cursor: text;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-family: 'Unbounded', sans-serif; font-size: 12px; font-weight: 500;
+    color: #2E2820; outline: none; cursor: text;
   }
-  .direction-title-input:focus { color: var(--text); }
-  .direction-title-input::placeholder { color: #b0a890; }
-  .direction-body { padding: 0 10px 0; }
+  .direction-title-input:focus { color: #2E2820; }
+  .direction-title-input::placeholder { color: #a09080; }
+  .direction-body { padding: 0; }
 
   /* ── Tasks list ── */
-  .tasks-list { border: 1px solid var(--border-light); margin-bottom: 0; }
+  .tasks-list { background: #F4EFE4; margin-bottom: 0; }
   .tasks-list:empty { display: none; }
 
   /* ── Drag & drop ── */
@@ -283,7 +326,7 @@
   /* ── Collapsed task row ── */
   .task-row {
     display: flex; align-items: flex-start; gap: 8px;
-    padding: 9px 10px; cursor: pointer; user-select: none; transition: background 0.1s;
+    padding: 5px 8px; user-select: none; transition: background 0.1s;
   }
   .task-row:hover { background: rgba(0,0,0,0.025); }
   .task-row.is-expanded { background: rgba(0,0,0,0.025); }
@@ -294,24 +337,32 @@
   }
   .status-dot:hover { transform: scale(1.4); }
 
+  /* Элемент 1 — текст задачи (ширина по содержимому, курсор text) */
   .task-title-full {
-    flex: 1; min-width: 0;
+    flex: 0 1 auto; min-width: 0;
     font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text);
-    white-space: normal; word-break: break-word; cursor: pointer; line-height: 1.5;
+    white-space: normal; word-break: break-word; cursor: text; line-height: 1.35;
   }
   .task-wrapper.status-done .task-title-full { text-decoration: line-through; color: var(--text-dim); }
-  body.locked .task-title-full { cursor: default; }
+  body.locked .task-title-full { cursor: pointer; }
   .task-title-full:empty::before { content: 'Задача...'; opacity: 0.4; }
 
+  /* Элемент 1б — input появляется на месте span при редактировании */
   .task-row-input {
-    display: none; flex: 1; min-width: 0;
+    display: none; flex: 0 1 auto; min-width: 40px;
     background: transparent; border: none;
     font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text);
     outline: none; cursor: text;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  /* Когда строка в режиме редактирования: input растягивается, expander скрывается */
+  .task-row.editing .task-row-input    { flex: 1 1 auto; }
+  .task-row.editing .task-row-expander { display: none; }
   .task-row-input::placeholder { color: var(--text-dim); }
   .task-wrapper.status-done .task-row-input { text-decoration: line-through; color: var(--text-dim); }
+
+  /* Элемент 2 — заполнитель, занимает остаток строки, раскрывает задачу */
+  .task-row-expander { flex: 1 0 0; min-width: 0; cursor: pointer; align-self: stretch; }
+  body.locked .task-row-expander { cursor: pointer; }
 
   .task-row-responsible {
     font-size: 9px; color: var(--text-dim); flex: 0 1 auto; min-width: 0; max-width: 35%;
@@ -345,10 +396,10 @@
   /* ── Expanded task detail ── */
   .task-detail {
     background: #ede7dc; border-top: 1px solid var(--border);
-    padding: 5px 12px 5px 28px;
+    padding: 3px 8px 3px 22px;
   }
-  .detail-inline { display: flex; flex-direction: column; gap: 7px; }
-  .detail-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .detail-inline { display: flex; flex-direction: column; gap: 5px; }
+  .detail-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .detail-group { display: flex; align-items: center; gap: 5px; }
   .detail-label {
     font-family: 'Unbounded', sans-serif; font-size: 7.5px; color: var(--text-dim);
@@ -406,22 +457,18 @@
 
   /* ── History ── */
   .history-section { margin-bottom: 0; }
-  .history-toggle-btn {
-    font-family: 'Unbounded', sans-serif; font-size: 8px; padding: 3px 9px;
-    background: transparent; border: 1px solid var(--border); color: var(--text-dim);
-    cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.12s;
-  }
-  .history-toggle-btn:hover { border-color: var(--text-dim); color: var(--text); }
-  .history-toggle-btn.open { background: var(--bg3); color: var(--text); }
-  .history-body { margin-top: 8px; padding: 9px; background: var(--bg2); border: 1px solid var(--border); }
-  .history-body:has(.log-entries > .log-new-btn:only-child) { padding: 3px 9px; }
-  .log-entries { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
+  .hist-icon-btn { gap: 3px; }
+  .hist-icon-btn.active { opacity: 1; color: var(--text); }
+  .hist-count { font-family: 'Unbounded', sans-serif; font-size: 7.5px; color: inherit; }
+  .history-body { margin-top: 4px; padding: 4px 6px; background: var(--bg2); border: 1px solid var(--border); }
+  .history-body:not(.showing-log):has(.log-entries > .log-new-btn:only-child) { display: none !important; }
+  .log-entries { display: flex; flex-direction: column; gap: 3px; margin-bottom: 2px; }
   .log-entries:has(> .log-new-btn:only-child) { margin-bottom: 0; }
   .log-slot { width: 14px; flex-shrink: 0; }
-  .log-entry { display: flex; gap: 10px; align-items: flex-start; position: relative; }
+  .log-entry { display: flex; gap: 8px; align-items: flex-start; position: relative; }
   .log-entry:hover .log-entry-actions { opacity: 1; }
-  .log-date  { font-size: 8px; color: var(--text-dim); flex-shrink: 0; white-space: nowrap; padding-top: 2px; }
-  .log-text  { font-size: 9px; color: var(--text); line-height: 1.6; white-space: pre-wrap; word-break: break-word; flex: 1; }
+  .log-date  { font-size: 8px; color: var(--text-dim); flex-shrink: 0; white-space: nowrap; padding-top: 1px; }
+  .log-text  { font-size: 9px; color: var(--text); line-height: 1.4; white-space: pre-wrap; word-break: break-word; flex: 1; }
   .log-entry-actions {
     display: flex; gap: 3px; flex-shrink: 0; opacity: 0; transition: opacity 0.12s; padding-top: 1px;
   }
@@ -480,7 +527,8 @@
   .add-direction-btn {
     font-family: 'Unbounded', sans-serif; font-size: 8px; color: var(--text-dim);
     background: transparent; border: 1px dashed var(--border); padding: 5px 12px;
-    cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; transition: all 0.15s;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+    display: block; margin: 10px 16px 14px; transition: all 0.15s;
   }
   .add-direction-btn:hover { border-color: var(--lime-dim); color: var(--lime-dim); }
   .add-direction-btn::before { content: '+ '; }
@@ -587,19 +635,20 @@
     .filter-select { font-size: 8px; max-width: 160px; }
 
     /* Blocks & directions */
-    .block { margin: 0; }
-    .block-header { padding: 10px 12px; }
+    .block { margin: 0 -12px; border-radius: 0; }
+    .block-header { padding: 7px 12px; }
     /* Drag-ручки на тач бесполезны — скрываем, освобождаем место */
     .drag-handle, .dir-drag-handle, .block-drag-handle { display: none !important; }
     /* Expand-all виден только на hover — на тач скрываем */
     .expand-all-btn { display: none !important; }
     /* Заголовок блока гибко сжимается под любую длину */
-    .block-title-input { flex: 1 1 0; min-width: 60px; max-width: none; margin-right: 0; font-size: 12px; text-overflow: ellipsis; }
-    .direction-header { padding: 7px 10px; }
-    .direction-title-input { font-size: 10px; }
+    .block-title-input { flex: 1 1 0; min-width: 60px; max-width: none; margin-right: 0; font-size: 13px; text-overflow: ellipsis; }
+    .direction-header { padding: 5px 12px; }
+    .direction-title-input, .dir-ghost-text { font-size: 11px; }
+    .dir-title-wrap { max-width: 80%; }
 
     /* Task rows — скрыть ответственного, дать место тексту */
-    .task-row { padding: 10px 10px; gap: 7px; }
+    .task-row { padding: 6px 10px; gap: 7px; }
     .task-title-full { font-size: 11px; }
     .task-row-responsible { display: none; }
     .task-row-status { font-size: 7px; }
@@ -670,14 +719,15 @@
 
     /* ── Иерархия: блок > направление > задача ── */
     /* Блок — самый тёмный */
-    .block-header      { background: #cec6ba !important; }
-    .block-title-input { font-size: 14px !important; font-weight: 800 !important; color: #1a1a1a !important; }
+    .block-header      { background: var(--block-color, #D8CFBC) !important; }
+    .block-title-input { font-size: 14px !important; font-weight: 500 !important; color: var(--block-text, #2E2820) !important; letter-spacing: 0.05em !important; }
+    .block-progress    { font-size: 11px !important; color: var(--block-text-dim, rgba(46,40,32,0.58)) !important; }
 
-    /* Направление — средний уровень, заметнее задачи */
-    .direction-header  { background: #ddd8cf !important; }
+    /* Направление — средний уровень */
+    .direction-header  { background: #E4DCC9 !important; }
     .direction-title-input {
-      font-size: 12px !important; font-weight: 700 !important;
-      color: #2a2a2a !important;
+      font-size: 12px !important; font-weight: 500 !important;
+      color: #2E2820 !important;
     }
 
     /* Задача — самый тихий уровень */
@@ -696,13 +746,14 @@
 
     /* ── Отступы ── */
     .task-row          { padding: 5px 8px !important; border-bottom: 1px solid #ede8e0 !important; }
-    .block-header      { padding: 5px 12px !important; }
-    .direction-header  { padding: 4px 10px !important; }
-    .block             { margin-bottom: 12px !important; box-shadow: none !important; }
-    .direction         { margin-bottom: 3px !important; }
-    .directions-list   { gap: 4px !important; }
-    .block-body        { padding: 6px !important; }
+    .block-header      { padding: 6px 12px !important; }
+    .direction-header  { padding: 5px 12px !important; }
+    .block             { margin-bottom: 12px !important; box-shadow: none !important; border-radius: 4px !important; }
+    .direction         { margin-bottom: 0 !important; }
+    .directions-list   { gap: 0 !important; margin-top: 0 !important; }
+    .block-body        { padding: 0 !important; }
     .direction-body    { padding: 0 !important; }
+    .tasks-list        { background: #F4EFE4 !important; }
 
     /* ── Развёрнутые блоки / направления ── */
     .collapsible { max-height: none !important; overflow: visible !important; }
@@ -815,6 +866,7 @@ let state = { blocks: [] };
 
 async function init() {
   state = await loadData();
+  await document.fonts.ready;
   renderAll();
   applyLockState();
 }
@@ -1158,7 +1210,14 @@ function applyFilter() {
 function applyExpandAll(ids, open) {
   ids.forEach(id => {
     open ? expandedTasks.add(id) : expandedTasks.delete(id);
-    open ? openHistories.add(id) : openHistories.delete(id);
+    let hasLog = false;
+    if (open) {
+      outer: for (const b of state.blocks) for (const d of b.directions) {
+        const t = d.tasks.find(t => t.id === id);
+        if (t) { hasLog = (t.log||[]).length > 0; break outer; }
+      }
+    }
+    hasLog ? openHistories.add(id) : openHistories.delete(id);
     const detail   = document.getElementById(`detail-${id}`);
     const row      = document.getElementById(`row-${id}`);
     const chev     = document.getElementById(`chev-${id}`);
@@ -1167,8 +1226,8 @@ function applyExpandAll(ids, open) {
     if (detail)   detail.style.display = open ? 'block' : 'none';
     if (row)      row.classList.toggle('is-expanded', open);
     if (chev)     chev.classList.toggle('open', open);
-    if (histBody) histBody.style.display = open ? 'block' : 'none';
-    if (histBtn)  { histBtn.classList.toggle('open', open); syncHistBtn(id, histBtn); }
+    if (histBody) histBody.style.display = hasLog ? 'block' : 'none';
+    if (histBtn)  { histBtn.classList.toggle('open', hasLog); syncHistBtn(id, histBtn); }
   });
 }
 function matchedTaskIds(tasks) {
@@ -1206,22 +1265,15 @@ function toggleAllTasksInBlock(blockId) {
   applyExpandAll(ids, !allOpen);
   if (!allOpen) saveData();
 }
-function handleTitleFullClick(event, taskId) {
-  event.stopPropagation();
-  if (editMode) {
-    const span = event.currentTarget;
-    const textWidth = measureTextPx(span.textContent || '', span);
-    const clickX = event.clientX - span.getBoundingClientRect().left;
-    if (clickX <= textWidth + 8) { startEditTitle(taskId); return; }
-  }
-  toggleTask(taskId);
-}
-function startEditTitle(taskId) {
+function editTaskTitle(taskId) {
+  if (!editMode) { toggleTask(taskId); return; }
   const span = document.getElementById(`task-title-${taskId}`);
   const inp  = document.getElementById(`task-inp-${taskId}`);
-  if (!inp) return;
-  if (span) span.style.display = 'none';
+  if (!span || !inp) return;
+  const row = document.getElementById(`row-${taskId}`);
+  span.style.display = 'none';
   inp.style.display = 'block';
+  row?.classList.add('editing');
   inp.focus();
   inp.select();
 }
@@ -1229,7 +1281,9 @@ function endEditTitle(taskId) {
   const span = document.getElementById(`task-title-${taskId}`);
   const inp  = document.getElementById(`task-inp-${taskId}`);
   if (!inp) return;
+  const row = document.getElementById(`row-${taskId}`);
   inp.style.display = 'none';
+  row?.classList.remove('editing');
   if (span) span.style.display = '';
 }
 function toggleTask(taskId) {
@@ -1255,14 +1309,6 @@ function toggleTask(taskId) {
       if (btn) { btn.classList.add('open'); syncHistBtn(taskId, btn); }
     }
   }
-}
-function handleTaskInputCursor(event, taskId) { /* no-op */ }
-function handleTaskRowClick(event, taskId) {
-  const t = event.target;
-  if (t.classList.contains('status-dot') || t.classList.contains('drag-handle') ||
-      t.classList.contains('task-row-input') ||
-      t.classList.contains('resp-chip') || t.classList.contains('resp-sep')) return;
-  toggleTask(taskId);
 }
 function showRespInput(taskId) {
   const btn  = document.getElementById(`resp-btn-${taskId}`);
@@ -1305,9 +1351,16 @@ function syncHistBtn(taskId, btn) {
   outer: for (const b of state.blocks) for (const d of b.directions) {
     const t = d.tasks.find(t => t.id === taskId); if (t) { count = (t.log||[]).length; break outer; }
   }
-  btn.textContent = `История${count > 0 ? ` (${count})` : ''} ${openHistories.has(taskId) ? '▴' : '▾'}`;
+  btn.classList.toggle('active', openHistories.has(taskId));
+  const countEl = btn.querySelector('.hist-count');
+  if (count > 0) {
+    if (countEl) { countEl.textContent = count; }
+    else { const s = document.createElement('span'); s.className = 'hist-count'; s.textContent = count; btn.appendChild(s); }
+  } else { if (countEl) countEl.remove(); }
 }
 function showLogInput(blockId, dirId, taskId) {
+  const body = document.getElementById(`hist-body-${taskId}`);
+  if (body) { body.style.display = 'block'; body.classList.add('showing-log'); }
   const btn = document.getElementById(`log-new-btn-${taskId}`);
   const add = document.getElementById(`log-add-${taskId}`);
   if (btn) btn.style.display = 'none';
@@ -1322,6 +1375,8 @@ function hideLogInput(taskId) {
   if (add) add.style.display = 'none';
   const btn = document.getElementById(`log-new-btn-${taskId}`);
   if (btn) btn.style.display = 'block';
+  const body = document.getElementById(`hist-body-${taskId}`);
+  if (body) { body.classList.remove('showing-log'); body.style.removeProperty('display'); }
 }
 function handleLogKey(e, blockId, dirId, taskId) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addLogEntry(blockId, dirId, taskId); }
@@ -1414,7 +1469,7 @@ function deleteLog(blockId, dirId, taskId, idx) {
 
 // ── State mutations ───────────────────────────────────────────────────────────
 function addBlock() {
-  state.blocks.push({ id: genId(), title: '', collapsed: true, directions: [] });
+  state.blocks.push({ id: genId(), title: '', collapsed: true, color: pickNextColor(), directions: [] });
   saveData();
   setTimeout(() => {
     const inputs = document.querySelectorAll('.block-title-input');
@@ -1448,8 +1503,19 @@ function updateBlockColor(blockId, color) {
   if (b) {
     b.color = color;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    const blockEl = document.querySelector(`[data-block="${blockId}"]`);
-    if (blockEl) blockEl.style.borderLeftColor = color;
+    const colors = getBlockColors(color);
+    const header = document.querySelector(`[data-block="${blockId}"] .block-header`);
+    if (header) {
+      header.style.setProperty('--block-color', color);
+      header.style.setProperty('--block-text', colors.text);
+      header.style.setProperty('--block-text-dim', colors.textDim);
+      header.style.setProperty('--block-bar-bg', colors.barBg);
+      header.style.setProperty('--block-bar-fill', colors.barFill);
+    }
+    document.querySelectorAll(`[data-block="${blockId}"] .dir-title-wrap`)
+      .forEach(wrap => { wrap.style.setProperty('--dir-underline', color); });
+    const swatch = document.querySelector(`[data-block="${blockId}"] .color-swatch-btn`);
+    if (swatch) swatch.style.background = color;
   }
 }
 function addDirection(blockId) {
@@ -1480,6 +1546,10 @@ function toggleDirection(blockId, dirId) {
   const b = state.blocks.find(b => b.id === blockId);
   const d = b && b.directions.find(d => d.id === dirId);
   if (d) { d.collapsed = !d.collapsed; editMode ? saveData() : renderAll(); }
+}
+function syncDirGhost(inp) {
+  const ghost = inp.closest('.dir-title-wrap')?.querySelector('.dir-ghost-text');
+  if (ghost) ghost.textContent = inp.value || inp.placeholder || '';
 }
 function updateDirectionTitle(blockId, dirId, title) {
   if (!editMode) return;
@@ -1639,6 +1709,92 @@ function blockProgress(block) {
   return total === 0 ? null : { total, done, pct: Math.round((done/total)*100) };
 }
 
+// ── Block color palette ───────────────────────────────────────────────────────
+const PALETTE = [
+  { color: '#7a9e00', name: 'Лайм' },
+  { color: '#d4920a', name: 'Янтарь' },
+  { color: '#3d85c8', name: 'Синий' },
+  { color: '#9b5ea4', name: 'Фиолетовый' },
+  { color: '#c07830', name: 'Оранжевый' },
+  { color: '#8a7d68', name: 'Серый' },
+  { color: '#28d5e2', name: 'Циан' },
+  { color: '#e2fd69', name: 'Жёлтый' },
+  { color: '#c0392b', name: 'Красный' },
+];
+
+function getLuminance(hex) {
+  const rgb = parseInt(hex.replace('#',''), 16);
+  const r = ((rgb >> 16) & 0xff) / 255;
+  const g = ((rgb >> 8) & 0xff) / 255;
+  const b = (rgb & 0xff) / 255;
+  const lin = c => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+function getBlockColors(hex) {
+  const l = getLuminance(hex);
+  const light = l <= 0.18;
+  return {
+    text:    light ? '#f0ece4' : '#2E2820',
+    textDim: light ? 'rgba(240,236,228,0.65)' : 'rgba(46,40,32,0.58)',
+    barBg:   light ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.18)',
+    barFill: light ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.42)',
+  };
+}
+
+function pickNextColor() {
+  const used = new Set(state.blocks.map(b => b.color).filter(Boolean));
+  const found = PALETTE.find(p => !used.has(p.color));
+  return found ? found.color : PALETTE[state.blocks.length % PALETTE.length].color;
+}
+
+let activePaletteBlockId = null;
+
+function openColorPalette(blockId, btn) {
+  if (activePaletteBlockId === blockId) { closeColorPalette(); return; }
+  closeColorPalette();
+  activePaletteBlockId = blockId;
+  const current = (state.blocks.find(b => b.id === blockId) || {}).color || '';
+  const popup = document.createElement('div');
+  popup.id = 'color-palette-popup';
+  popup.className = 'color-palette-popup';
+  popup.innerHTML = `
+    <div class="color-palette-swatches">
+      ${PALETTE.map(({color, name}) =>
+        `<button class="palette-swatch${color === current ? ' active' : ''}" style="background:${color}" title="${name}"
+          onclick="selectBlockColor('${blockId}','${color}')"></button>`
+      ).join('')}
+    </div>
+    <div class="palette-custom-row">
+      <span class="palette-custom-label">свой цвет</span>
+      <input type="color" class="palette-custom-input" value="${current || '#7a9e00'}" title="Выбрать цвет"
+        oninput="updateBlockColor('${blockId}',this.value)"
+        onchange="closeColorPalette()">
+    </div>`;
+  document.body.appendChild(popup);
+  const rect = btn.getBoundingClientRect();
+  popup.style.top  = (rect.bottom + 6) + 'px';
+  popup.style.left = Math.max(4, rect.right - 168) + 'px';
+  setTimeout(() => document.addEventListener('click', _closePaletteOutside), 0);
+}
+
+function _closePaletteOutside(e) {
+  const popup = document.getElementById('color-palette-popup');
+  if (popup && !popup.contains(e.target)) closeColorPalette();
+}
+
+function closeColorPalette() {
+  const popup = document.getElementById('color-palette-popup');
+  if (popup) popup.remove();
+  document.removeEventListener('click', _closePaletteOutside);
+  activePaletteBlockId = null;
+}
+
+function selectBlockColor(blockId, color) {
+  updateBlockColor(blockId, color);
+  closeColorPalette();
+}
+
 // ── Render ────────────────────────────────────────────────────────────────────
 function renderAll() {
   const container = document.getElementById('blocks-list');
@@ -1662,11 +1818,11 @@ function renderAll() {
 function renderBlock(block) {
   const prog = blockProgress(block);
   const blockColor = block.color || '#7a9e00';
+  const colors = getBlockColors(blockColor);
   const div = document.createElement('div');
   div.className = 'block'; div.dataset.block = block.id;
-  div.style.borderLeftColor = blockColor;
   div.innerHTML = `
-    <div class="block-header" onclick="handleBlockHeaderClick(event,'${block.id}')">
+    <div class="block-header" style="--block-color:${blockColor};--block-text:${colors.text};--block-text-dim:${colors.textDim};--block-bar-bg:${colors.barBg};--block-bar-fill:${colors.barFill}" onclick="handleBlockHeaderClick(event,'${block.id}')">
       <span class="block-drag-handle"
             draggable="true"
             ondragstart="blockDragStart(event,'${block.id}')"
@@ -1676,8 +1832,8 @@ function renderBlock(block) {
         value="${esc(block.title)}" data-focus-id="block-title-${block.id}"
         onclick="event.stopPropagation()" oninput="updateBlockTitle('${block.id}',this.value);autoResizeInput(this)">
       ${prog ? `<div class="block-progress"><div class="progress-bar"><div class="progress-fill" style="width:${prog.pct}%"></div></div><span>${prog.done}/${prog.total}</span></div>` : ''}
-      <input type="color" class="block-color-swatch" value="${blockColor}" title="Цвет блока"
-             onclick="event.stopPropagation()" oninput="updateBlockColor('${block.id}',this.value)">
+      <button class="color-swatch-btn" style="background:${blockColor}" title="Цвет блока"
+              onclick="event.stopPropagation();openColorPalette('${block.id}',this)"></button>
       <button class="expand-all-btn" onclick="event.stopPropagation();toggleAllTasksInBlock('${block.id}')">раскрыть все</button>
       <button class="btn btn-danger" onclick="event.stopPropagation();removeBlock('${block.id}')">✕</button>
       <span class="block-chevron ${block.collapsed?'':'open'}">▼</span>
@@ -1687,7 +1843,7 @@ function renderBlock(block) {
         <div class="directions-list" data-block-dirs="${block.id}"
              ondragover="dirsListDragOver(event,'${block.id}')"
              ondrop="dirsListDrop(event,'${block.id}')">
-          ${block.directions.map(d => renderDirection(block.id, d)).join('')}
+          ${block.directions.map(d => renderDirection(block.id, d, blockColor)).join('')}
         </div>
         <button class="add-direction-btn" onclick="addDirection('${block.id}')">Направление</button>
       </div>
@@ -1699,7 +1855,7 @@ function handleBlockHeaderClick(event, blockId) {
   toggleBlock(blockId);
 }
 
-function renderDirection(blockId, dir) {
+function renderDirection(blockId, dir, blockColor = '#7a9e00') {
   return `
     <div class="direction" data-dir="${dir.id}">
       <div class="direction-header" onclick="handleDirHeaderClick(event,'${blockId}','${dir.id}')">
@@ -1708,9 +1864,13 @@ function renderDirection(blockId, dir) {
               ondragstart="dirDragStart(event,'${blockId}','${dir.id}')"
               ondragend="dirDragEnd(event,'${blockId}','${dir.id}')"
               onclick="event.stopPropagation()">⠿</span>
-        <input class="direction-title-input" placeholder="Направление..."
-          value="${esc(dir.title)}" data-focus-id="dir-title-${dir.id}"
-          onclick="event.stopPropagation()" oninput="updateDirectionTitle('${blockId}','${dir.id}',this.value);autoResizeInput(this)">
+        <span class="dir-title-wrap" style="--dir-underline:${blockColor}">
+          <span class="dir-ghost-text">${esc(dir.title) || 'Направление...'}</span>
+          <input class="direction-title-input" placeholder="Направление..."
+            value="${esc(dir.title)}" data-focus-id="dir-title-${dir.id}"
+            onclick="event.stopPropagation()"
+            oninput="updateDirectionTitle('${blockId}','${dir.id}',this.value);syncDirGhost(this)">
+        </span>
         <button class="expand-all-btn" onclick="event.stopPropagation();toggleAllTasksInDir('${blockId}','${dir.id}')">раскрыть все</button>
         <button class="btn btn-danger" onclick="event.stopPropagation();removeDirection('${blockId}','${dir.id}')">✕</button>
         <span class="block-chevron ${dir.collapsed?'':'open'}">▼</span>
@@ -1745,33 +1905,40 @@ function renderTask(blockId, dirId, task) {
 
   return `
     <div class="task-wrapper status-${task.status}${overdue?' overdue':''}" data-task="${task.id}">
-      <div class="task-row${expanded?' is-expanded':''}" id="row-${task.id}"
-           onclick="handleTaskRowClick(event,'${task.id}')">
+      <div class="task-row${expanded?' is-expanded':''}" id="row-${task.id}">
         <span class="drag-handle"
               draggable="true"
               ondragstart="taskDragStart(event,'${blockId}','${dirId}','${task.id}')"
-              ondragend="taskDragEnd(event,'${task.id}')"
-              onclick="event.stopPropagation()">⠿</span>
+              ondragend="taskDragEnd(event,'${task.id}')">⠿</span>
         <span class="status-dot" style="background:${dotColor(task)}" title="Сменить статус"
-              onclick="event.stopPropagation();cycleTaskStatus('${blockId}','${dirId}','${task.id}')"></span>
+              onclick="cycleTaskStatus('${blockId}','${dirId}','${task.id}')"></span>
         <span class="task-title-full" id="task-title-${task.id}"
-              onclick="handleTitleFullClick(event,'${task.id}')">${esc(task.text)}</span>
+              onclick="editTaskTitle('${task.id}')">${esc(task.text)}</span>
         <input class="task-row-input" id="task-inp-${task.id}"
                placeholder="Задача..." value="${esc(task.text)}"
                data-focus-id="task-text-${task.id}"
                onblur="endEditTitle('${task.id}')"
                oninput="updateTaskText('${blockId}','${dirId}','${task.id}',this.value)">
+        <div class="task-row-expander" onclick="toggleTask('${task.id}')"></div>
         ${respChips ? `<span class="task-row-responsible">${respChips}</span>` : ''}
         <span class="task-row-status${overdue?' is-overdue':''}">${overdue ? 'просрочено' : labels[task.status]}</span>
-        <span class="task-row-chevron${expanded?' open':''}" id="chev-${task.id}">▾</span>
+        <span class="task-row-chevron${expanded?' open':''}" id="chev-${task.id}"
+              onclick="toggleTask('${task.id}')">▾</span>
       </div>
       <div class="task-detail" id="detail-${task.id}" style="display:${expanded?'block':'none'}">
         <div class="detail-inline">
           <div class="detail-row">
             <div class="detail-group">
-              <button class="history-toggle-btn${histOpen?' open':''}" id="hist-btn-${task.id}"
-                      onclick="toggleHistory('${task.id}')">
-                История${logCount>0?` (${logCount})`:''} ${histOpen?'▴':'▾'}
+              <button class="detail-action-btn hist-icon-btn${histOpen?' active':''}" id="hist-btn-${task.id}"
+                      onclick="toggleHistory('${task.id}')" title="История задачи">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M13 5h8"/><path d="M13 9h5"/>
+                  <path d="M13 15h8"/><path d="M13 19h5"/>
+                  <rect x="3" y="4" width="6" height="6" rx="1"/>
+                  <rect x="3" y="14" width="6" height="6" rx="1"/>
+                </svg>
+                ${logCount>0?`<span class="hist-count">${logCount}</span>`:''}
               </button>
             </div>
             ${task.deadline ? `<div class="detail-group" style="position:relative">
@@ -1866,7 +2033,7 @@ function autoResizeInput(inp) {
   inp.style.width = Math.max(parseInt(inp.style.minWidth) || 40, w) + 'px';
 }
 function autoResizeAllInputs() {
-  document.querySelectorAll('.block-title-input, .direction-title-input').forEach(autoResizeInput);
+  document.querySelectorAll('.block-title-input').forEach(autoResizeInput);
 }
 
 // ── Export ────────────────────────────────────────────────────────────────────
