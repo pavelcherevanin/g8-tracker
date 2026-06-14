@@ -52,6 +52,7 @@
   }
   .header-text h1 { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
   .header-text p  { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
+  .header-print-date { display: none; }
   .header-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
 
   /* ── Lock button ── */
@@ -79,11 +80,11 @@
   body.locked .responsible-tag     { pointer-events: none; cursor: default; }
   body.locked .tag-remove          { display: none; }
   body.locked .deadline-input      { display: none !important; }
-  body.locked .log-add             { display: none !important; }
+  body.locked .log-add, body.locked .log-new-btn { display: none !important; }
   body.locked .log-edit-btn,
   body.locked .log-del-btn         { display: none !important; }
   body.locked .block-color-swatch  { display: none !important; }
-  body.locked .detail-footer       { display: none !important; }
+  body.locked .detail-delete-btn   { display: none !important; }
   body.locked .btn-primary         { display: none !important; }
   body.locked .export-wrap .export-menu-item:last-child { display: none !important; } /* скрыть импорт */
 
@@ -281,7 +282,7 @@
 
   /* ── Collapsed task row ── */
   .task-row {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: flex-start; gap: 8px;
     padding: 9px 10px; cursor: pointer; user-select: none; transition: background 0.1s;
   }
   .task-row:hover { background: rgba(0,0,0,0.025); }
@@ -289,44 +290,57 @@
 
   .status-dot {
     width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-    cursor: pointer; transition: transform 0.15s;
+    cursor: pointer; transition: transform 0.15s; margin-top: 3px;
   }
   .status-dot:hover { transform: scale(1.4); }
 
-  .task-row-input {
-    flex: 1; min-width: 0;
-    background: transparent; border: none;
-    font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text);
-    outline: none; cursor: pointer;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .task-row-input:focus { cursor: text; }
-  .task-row.is-expanded .task-row-responsible { max-width: none; white-space: normal; overflow: visible; text-overflow: unset; }
   .task-title-full {
-    display: none; flex: 1; min-width: 0;
+    flex: 1; min-width: 0;
     font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text);
-    white-space: normal; word-break: break-word; line-height: 1.5; cursor: pointer;
+    white-space: normal; word-break: break-word; cursor: pointer; line-height: 1.5;
   }
   .task-wrapper.status-done .task-title-full { text-decoration: line-through; color: var(--text-dim); }
-  .task-row.is-expanded .task-row-input { display: none; }
-  .task-row.is-expanded .task-title-full { display: block; }
-  .task-row.is-expanded { align-items: flex-start; }
-  .task-row.is-expanded .status-dot,
-  .task-row.is-expanded .task-row-chevron { margin-top: 2px; }
+  body.locked .task-title-full { cursor: default; }
+  .task-title-full:empty::before { content: 'Задача...'; opacity: 0.4; }
+
+  .task-row-input {
+    display: none; flex: 1; min-width: 0;
+    background: transparent; border: none;
+    font-family: 'Unbounded', sans-serif; font-size: 11px; color: var(--text);
+    outline: none; cursor: text;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
   .task-row-input::placeholder { color: var(--text-dim); }
   .task-wrapper.status-done .task-row-input { text-decoration: line-through; color: var(--text-dim); }
 
   .task-row-responsible {
-    font-size: 9px; color: var(--text-dim); flex-shrink: 0;
-    max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    font-size: 9px; color: var(--text-dim); flex: 0 1 auto; min-width: 0; max-width: 35%;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
   }
-  .task-row-status {
-    font-family: 'Unbounded', sans-serif; font-size: 7px; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+  .task-row-status { display: none; margin-top: 2px; }
+  .task-row-status.is-overdue {
+    display: inline;
+    font-family: 'Unbounded', sans-serif; font-size: 7px; font-weight: 700;
+    color: var(--red); text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
   }
-  .task-row-status.is-overdue { color: var(--red); font-weight: 700; }
-  .task-row-chevron { font-size: 9px; color: var(--text-dim); flex-shrink: 0; transition: transform 0.18s; line-height: 1; }
+  .task-row-chevron { font-size: 9px; color: var(--text-dim); flex-shrink: 0; transition: transform 0.18s; line-height: 1; margin-top: 2px; }
   .task-row-chevron.open { transform: rotate(180deg); }
+
+  /* ── Detail action icons ── */
+  .detail-action-btn {
+    display: flex; align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; color: var(--text-dim);
+    opacity: 0.45; padding: 0; flex-shrink: 0; transition: opacity 0.15s, color 0.15s;
+  }
+  .detail-action-btn:hover { opacity: 1; color: var(--lime); }
+  body.locked .detail-action-btn { display: none; }
+  .resp-icon-wrap { display: none; align-items: center; }
+  .resp-icon-wrap.open { display: inline-flex; }
+  .resp-icon-input {
+    font-size: 9px; font-family: 'Unbounded', sans-serif; letter-spacing: 0.3px;
+    background: transparent; border: none; border-bottom: 1px solid var(--lime);
+    color: var(--text); outline: none; width: 110px; padding-bottom: 1px;
+  }
 
   /* ── Expanded task detail ── */
   .task-detail {
@@ -345,10 +359,17 @@
     font-family: 'Unbounded', sans-serif; font-size: 9px; color: var(--text);
   }
   .deadline-ru.overdue-date { color: var(--red); }
-  .deadline-input {
-    font-size: 0; width: 16px; padding: 0; border: none; background: transparent; cursor: pointer;
+  .deadline-input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+  .deadline-add-btn {
+    background: none; border: 1px dashed var(--border); cursor: pointer;
+    color: var(--text-dim); font-size: 8px; padding: 2px 8px;
+    font-family: 'Unbounded', sans-serif; letter-spacing: 0.3px;
+    transition: border-color 0.15s, color 0.15s;
   }
-  .deadline-input::-webkit-calendar-picker-indicator { opacity: 0.45; width: 14px; cursor: pointer; margin: 0; }
+  .deadline-add-btn:hover { border-color: var(--text-dim); color: var(--text); }
+  body.locked .deadline-add-btn { display: none; }
+  body:not(.locked) .deadline-ru { cursor: pointer; }
+  body:not(.locked) .deadline-ru:hover { opacity: 0.7; }
   body.locked .deadline-group-edit { display: none; }
 
   .task-responsible { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
@@ -393,8 +414,10 @@
   .history-toggle-btn:hover { border-color: var(--text-dim); color: var(--text); }
   .history-toggle-btn.open { background: var(--bg3); color: var(--text); }
   .history-body { margin-top: 8px; padding: 9px; background: var(--bg2); border: 1px solid var(--border); }
-  .log-entries { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
-  .log-empty { font-size: 9px; color: var(--text-dim); font-style: italic; }
+  .history-body:has(.log-entries > .log-new-btn:only-child) { padding: 3px 9px; }
+  .log-entries { display: flex; flex-direction: column; gap: 5px; margin-bottom: 4px; }
+  .log-entries:has(> .log-new-btn:only-child) { margin-bottom: 0; }
+  .log-slot { width: 14px; flex-shrink: 0; }
   .log-entry { display: flex; gap: 10px; align-items: flex-start; position: relative; }
   .log-entry:hover .log-entry-actions { opacity: 1; }
   .log-date  { font-size: 8px; color: var(--text-dim); flex-shrink: 0; white-space: nowrap; padding-top: 2px; }
@@ -415,7 +438,14 @@
     color: var(--text); padding: 3px 5px; resize: none; line-height: 1.6;
     min-height: 28px; overflow: hidden;
   }
-  .log-add { display: flex; gap: 6px; align-items: flex-end; border-top: 1px solid var(--border); padding-top: 7px; }
+  .log-new-btn {
+    width: 14px; flex-shrink: 0; background: none; border: none; cursor: pointer;
+    color: var(--text-dim); font-size: 12px; font-family: monospace;
+    padding: 0; opacity: 0; transition: opacity 0.15s; text-align: center; line-height: 1.4;
+  }
+  .history-body:hover .log-new-btn { opacity: 0.4; }
+  .log-new-btn:hover { opacity: 1 !important; color: var(--lime); }
+  .log-add { display: flex; gap: 6px; align-items: flex-end; margin-top: 6px; }
   .log-input {
     flex: 1; font-family: 'Unbounded', sans-serif; font-size: 9px;
     background: transparent; border: none; outline: none;
@@ -423,22 +453,15 @@
     resize: none; overflow: hidden; min-height: 22px; line-height: 1.6;
   }
   .log-input:focus { border-bottom-color: var(--lime); }
-  .log-input::placeholder { color: var(--text-dim); }
-  .log-add-btn {
-    font-family: 'Unbounded', sans-serif; font-size: 8px; padding: 3px 8px;
-    background: var(--text); color: var(--bg); border: none; cursor: pointer;
-    text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+  .log-cancel-btn {
+    background: none; border: none; cursor: pointer; flex-shrink: 0;
+    color: var(--text-dim); font-size: 10px; padding: 1px 4px;
+    opacity: 0.4; transition: opacity 0.15s, color 0.15s; line-height: 1;
   }
-  .log-add-btn:hover { background: #3a2e1a; }
+  .log-cancel-btn:hover { opacity: 1; color: var(--red); }
 
   /* ── Detail footer ── */
-  .detail-footer { display: flex; justify-content: flex-end; padding-top: 4px; border-top: 1px solid var(--border); margin-top: 4px; }
-  .task-delete-btn {
-    font-family: 'Unbounded', sans-serif; font-size: 8px; padding: 3px 10px;
-    background: transparent; border: 1px solid transparent; color: var(--text-dim);
-    cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.12s;
-  }
-  .task-delete-btn:hover { border-color: var(--red); color: var(--red); }
+  .detail-delete-btn:hover { color: var(--red) !important; opacity: 1 !important; }
 
   /* ── Add buttons ── */
   .add-task-btn {
@@ -534,6 +557,15 @@
   .undo-btn:hover { background: #8ab800; }
   .undo-shortcut { font-size: 8px; color: #6a6050; }
 
+  /* ── Mobile-only responsible in detail ── */
+  .detail-resp-mobile { display: none; }
+  .detail-resp-names { font-size: 9px; color: var(--text); }
+
+  /* ── Responsible chips in row ── */
+  .resp-chip { cursor: pointer; }
+  body:not(.locked) .resp-chip:hover { color: var(--red); }
+  body.locked .resp-chip { cursor: default; pointer-events: none; }
+
   /* ── Mobile ── */
   @media (max-width: 640px) {
     .app { padding: 16px 12px 60px; }
@@ -568,7 +600,7 @@
 
     /* Task rows — скрыть ответственного, дать место тексту */
     .task-row { padding: 10px 10px; gap: 7px; }
-    .task-row-input { font-size: 11px; }
+    .task-title-full { font-size: 11px; }
     .task-row-responsible { display: none; }
     .task-row-status { font-size: 7px; }
 
@@ -576,33 +608,44 @@
     .task-detail { padding: 6px 10px 6px 22px; }
     .detail-inline { gap: 6px; }
     .detail-row { gap: 10px; }
+    .detail-resp-mobile { display: flex; }
   }
 
   /* ── Print / PDF ── */
   @media print {
-    @page { size: A4 portrait; margin: 15mm; }
+    @page { size: A4 portrait; margin: 0; }
     * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 
     body { background: #fff; }
     body::before { display: none; }
-    .app { padding: 0; max-width: 100%; }
+    .app { padding: 10px 15mm 15mm; max-width: 100%; }
 
-    /* ── Print header (повторяется на каждой странице) ── */
-    #print-header {
+    /* ── Print header (только первая страница) ── */
+    .header {
       display: flex !important;
-      position: fixed; top: 0; left: 0; right: 0;
-      justify-content: space-between; align-items: baseline;
-      font-family: 'Unbounded', sans-serif; font-size: 8px; color: #888;
-      padding-bottom: 5px; border-bottom: 1px solid #ccc; margin-bottom: 0;
+      position: static;
+      background: #fff; padding: 8px 0 10px;
+      border-bottom: 1px solid #ccc; margin-bottom: 14px;
+      align-items: center; gap: 14px; flex-wrap: nowrap;
     }
-    #print-header strong { font-size: 10px; color: #333; }
-    .header { display: none !important; }
+    .header-text { display: flex !important; align-items: baseline; gap: 12px; }
+    .header-text h1 { font-size: 14px !important; font-weight: 700 !important; color: #1a1a1a !important; letter-spacing: -0.3px !important; }
+    .logo { width: 30px !important; height: 30px !important; }
+    .header-print-date { display: inline !important; font-size: 11px !important; color: #888 !important; font-weight: 400 !important; }
 
     /* ── Скрываем всё интерактивное ── */
     .filter-bar, .header-actions, .drag-handle, .dir-drag-handle, .block-drag-handle,
     .btn-danger, .add-task-btn, .add-direction-btn, .expand-all-btn,
-    .history-toggle-btn, .detail-footer, .modal-overlay, .undo-toast,
-    .autocomplete-wrap, .task-row-chevron, .block-chevron { display: none !important; }
+    .history-toggle-btn, .modal-overlay, .undo-toast,
+    .autocomplete-wrap, .task-row-chevron, .block-chevron,
+    .block-color-swatch, .resp-chip-x, .log-new-btn, .log-add,
+    .detail-action-btn, .detail-delete-btn, .resp-icon-wrap { display: none !important; }
+
+    /* ── Page flow — allow blocks to break across pages ── */
+    .block, .block-body, .direction, .direction-tasks {
+      break-inside: auto !important; page-break-inside: auto !important;
+    }
+    .task-wrapper { break-inside: avoid; page-break-inside: avoid; }
 
     /* ── Статус — текст, без точки ── */
     .status-dot { display: none !important; }
@@ -673,15 +716,12 @@
 </style>
 </head>
 <body>
-<div id="print-header" style="display:none">
-  <strong>G8 TRACKER</strong>
-  <span id="print-date"></span>
-</div>
 <div class="app">
   <div class="header">
     <img class="logo" src="data:image/png;base64,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" alt="G8" width="44" height="44" style="object-fit:contain;background:none;">
     <div class="header-text">
       <h1>G8 TRACKER</h1>
+      <span id="print-date" class="header-print-date"></span>
     </div>
     <div class="header-actions">
       <button class="lock-btn" id="lock-btn" onclick="toggleEditMode()" title="Режим редактирования">🔒</button>
@@ -1168,12 +1208,29 @@ function toggleAllTasksInBlock(blockId) {
 }
 function handleTitleFullClick(event, taskId) {
   event.stopPropagation();
-  if (editMode && expandedTasks.has(taskId)) {
-    toggleTask(taskId);
-    setTimeout(() => { const inp = document.getElementById(`task-inp-${taskId}`); if (inp) { inp.focus(); inp.select(); } }, 0);
-  } else {
-    toggleTask(taskId);
+  if (editMode) {
+    const span = event.currentTarget;
+    const textWidth = measureTextPx(span.textContent || '', span);
+    const clickX = event.clientX - span.getBoundingClientRect().left;
+    if (clickX <= textWidth + 8) { startEditTitle(taskId); return; }
   }
+  toggleTask(taskId);
+}
+function startEditTitle(taskId) {
+  const span = document.getElementById(`task-title-${taskId}`);
+  const inp  = document.getElementById(`task-inp-${taskId}`);
+  if (!inp) return;
+  if (span) span.style.display = 'none';
+  inp.style.display = 'block';
+  inp.focus();
+  inp.select();
+}
+function endEditTitle(taskId) {
+  const span = document.getElementById(`task-title-${taskId}`);
+  const inp  = document.getElementById(`task-inp-${taskId}`);
+  if (!inp) return;
+  inp.style.display = 'none';
+  if (span) span.style.display = '';
 }
 function toggleTask(taskId) {
   expandedTasks.has(taskId) ? expandedTasks.delete(taskId) : expandedTasks.add(taskId);
@@ -1184,23 +1241,56 @@ function toggleTask(taskId) {
   if (detail) detail.style.display = open ? 'block' : 'none';
   if (row)    row.classList.toggle('is-expanded', open);
   if (chev)   chev.classList.toggle('open', open);
-}
-function handleTaskRowClick(event, taskId) {
-  if (event.target.classList.contains('status-dot') || event.target.classList.contains('drag-handle')) return;
-
-  if (event.target.classList.contains('task-row-input')) {
-    const inp = event.target;
-    const textWidth = measureTextPx(inp.value || inp.getAttribute('placeholder') || '', inp);
-    const clickX = event.clientX - inp.getBoundingClientRect().left;
-    if (clickX <= textWidth + 38) {
-      inp.focus();
-      return; // зона текста — открыть редактирование
+  if (open && !openHistories.has(taskId)) {
+    let logCount = 0;
+    outer: for (const b of state.blocks) for (const d of b.directions) {
+      const t = d.tasks.find(t => t.id === taskId);
+      if (t) { logCount = (t.log || []).length; break outer; }
     }
-    // зона после текста — раскрыть задачу, не фокусировать
-    setTimeout(() => inp.blur(), 0);
+    if (logCount > 0) {
+      openHistories.add(taskId);
+      const body = document.getElementById(`hist-body-${taskId}`);
+      const btn  = document.getElementById(`hist-btn-${taskId}`);
+      if (body) body.style.display = 'block';
+      if (btn) { btn.classList.add('open'); syncHistBtn(taskId, btn); }
+    }
   }
-
+}
+function handleTaskInputCursor(event, taskId) { /* no-op */ }
+function handleTaskRowClick(event, taskId) {
+  const t = event.target;
+  if (t.classList.contains('status-dot') || t.classList.contains('drag-handle') ||
+      t.classList.contains('task-row-input') ||
+      t.classList.contains('resp-chip') || t.classList.contains('resp-sep')) return;
   toggleTask(taskId);
+}
+function showRespInput(taskId) {
+  const btn  = document.getElementById(`resp-btn-${taskId}`);
+  const wrap = document.getElementById(`resp-wrap-${taskId}`);
+  const inp  = document.getElementById(`resp-inp-${taskId}`);
+  if (btn)  btn.style.display = 'none';
+  if (wrap) wrap.classList.add('open');
+  if (inp)  inp.focus();
+}
+function hideRespInput(taskId) {
+  setTimeout(() => {
+    const wrap = document.getElementById(`resp-wrap-${taskId}`);
+    if (wrap && !wrap.contains(document.activeElement)) {
+      const btn = document.getElementById(`resp-btn-${taskId}`);
+      wrap.classList.remove('open');
+      if (btn) btn.style.display = '';
+    }
+  }, 200);
+}
+function triggerLogInput(blockId, dirId, taskId) {
+  if (!openHistories.has(taskId)) {
+    openHistories.add(taskId);
+    const body = document.getElementById(`hist-body-${taskId}`);
+    const btn  = document.getElementById(`hist-btn-${taskId}`);
+    if (body) body.style.display = 'block';
+    if (btn)  { btn.classList.add('open'); syncHistBtn(taskId, btn); }
+  }
+  showLogInput(blockId, dirId, taskId);
 }
 function toggleHistory(taskId) {
   openHistories.has(taskId) ? openHistories.delete(taskId) : openHistories.add(taskId);
@@ -1217,6 +1307,26 @@ function syncHistBtn(taskId, btn) {
   }
   btn.textContent = `История${count > 0 ? ` (${count})` : ''} ${openHistories.has(taskId) ? '▴' : '▾'}`;
 }
+function showLogInput(blockId, dirId, taskId) {
+  const btn = document.getElementById(`log-new-btn-${taskId}`);
+  const add = document.getElementById(`log-add-${taskId}`);
+  if (btn) btn.style.display = 'none';
+  if (add) add.style.display = 'flex';
+  const inp = document.getElementById(`log-input-${taskId}`);
+  if (inp) inp.focus();
+}
+function hideLogInput(taskId) {
+  const inp = document.getElementById(`log-input-${taskId}`);
+  if (inp) { inp.value = ''; inp.style.height = 'auto'; }
+  const add = document.getElementById(`log-add-${taskId}`);
+  if (add) add.style.display = 'none';
+  const btn = document.getElementById(`log-new-btn-${taskId}`);
+  if (btn) btn.style.display = 'block';
+}
+function handleLogKey(e, blockId, dirId, taskId) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addLogEntry(blockId, dirId, taskId); }
+  else if (e.key === 'Escape') { hideLogInput(taskId); }
+}
 function addLogEntry(blockId, dirId, taskId) {
   const inp = document.getElementById(`log-input-${taskId}`);
   if (!inp) return;
@@ -1227,10 +1337,9 @@ function addLogEntry(blockId, dirId, taskId) {
   if (!t) return;
   if (!t.log) t.log = [];
   t.log.push({ date: fmtNow(), text });
-  inp.value = '';
-  inp.style.height = 'auto';
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   refreshLogEntries(blockId, dirId, taskId, t);
+  hideLogInput(taskId);
 }
 function refreshLogEntries(blockId, dirId, taskId, t) {
   const el = document.getElementById(`log-entries-${taskId}`);
@@ -1238,9 +1347,12 @@ function refreshLogEntries(blockId, dirId, taskId, t) {
   const btn = document.getElementById(`hist-btn-${taskId}`); if (btn) syncHistBtn(taskId, btn);
 }
 function renderLogEntries(log, blockId, dirId, taskId) {
-  if (!log || log.length === 0) return '<div class="log-empty">Записей пока нет</div>';
+  const btn = `<button class="log-new-btn" id="log-new-btn-${taskId}" onclick="showLogInput('${blockId}','${dirId}','${taskId}')">+</button>`;
+  if (!log || log.length === 0) return btn;
+  const last = log.length - 1;
   return log.map((e, i) => `
     <div class="log-entry" id="log-entry-${taskId}-${i}">
+      ${i === last ? btn : '<span class="log-slot"></span>'}
       <span class="log-date">${esc(e.date)}</span>
       <span class="log-text">${esc(e.text)}</span>
       <div class="log-entry-actions">
@@ -1292,9 +1404,12 @@ function deleteLog(blockId, dirId, taskId, idx) {
   const d = b && b.directions.find(d => d.id === dirId);
   const t = d && d.tasks.find(t => t.id === taskId);
   if (!t) return;
+  pushUndo();
+  const short = (t.log[idx]?.text || '').slice(0, 40) || 'Запись';
   t.log.splice(idx, 1);
   saveData();
   refreshLogEntries(blockId, dirId, taskId, t);
+  showToast(`«${short}» удалена`);
 }
 
 // ── State mutations ───────────────────────────────────────────────────────────
@@ -1417,7 +1532,11 @@ function updateTaskText(blockId, dirId, taskId, text) {
   const b = state.blocks.find(b => b.id === blockId);
   const d = b && b.directions.find(d => d.id === dirId);
   const t = d && d.tasks.find(t => t.id === taskId);
-  if (t) { t.text = text; localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  if (t) {
+    t.text = text; localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const span = document.getElementById(`task-title-${taskId}`);
+    if (span) span.textContent = text;
+  }
 }
 function updateTaskDeadline(blockId, dirId, taskId, deadline) {
   const b = state.blocks.find(b => b.id === blockId);
@@ -1449,6 +1568,7 @@ function handleResponsibleKey(event, blockId, dirId, taskId) {
   } else if (event.key === 'Escape') {
     event.target.value = '';
     hideAC(taskId);
+    hideRespInput(taskId);
   } else if (event.key === 'ArrowDown') {
     event.preventDefault();
     const first = document.querySelector(`#ac-${taskId} .autocomplete-item`);
@@ -1617,7 +1737,9 @@ function renderTask(blockId, dirId, task) {
   const overdue = isOverdue(task);
   const expanded = expandedTasks.has(task.id);
   const histOpen = openHistories.has(task.id);
-  const responsible = (task.responsible||[]).join(', ');
+  const respChips = (task.responsible||[]).map(r =>
+    `<span class="resp-chip" title="Удалить" onclick="event.stopPropagation();removeResponsible('${blockId}','${dirId}','${task.id}','${esc(r)}')">${esc(r)}</span>`
+  ).join('<span class="resp-sep">, </span>');
   const logCount = (task.log||[]).length;
   const dlClass = task.deadline && overdue ? 'overdue-date' : '';
 
@@ -1632,12 +1754,14 @@ function renderTask(blockId, dirId, task) {
               onclick="event.stopPropagation()">⠿</span>
         <span class="status-dot" style="background:${dotColor(task)}" title="Сменить статус"
               onclick="event.stopPropagation();cycleTaskStatus('${blockId}','${dirId}','${task.id}')"></span>
+        <span class="task-title-full" id="task-title-${task.id}"
+              onclick="handleTitleFullClick(event,'${task.id}')">${esc(task.text)}</span>
         <input class="task-row-input" id="task-inp-${task.id}"
                placeholder="Задача..." value="${esc(task.text)}"
                data-focus-id="task-text-${task.id}"
+               onblur="endEditTitle('${task.id}')"
                oninput="updateTaskText('${blockId}','${dirId}','${task.id}',this.value)">
-        <span class="task-title-full" onclick="handleTitleFullClick(event,'${task.id}')">${esc(task.text)}</span>
-        ${responsible ? `<span class="task-row-responsible">${esc(responsible)}</span>` : ''}
+        ${respChips ? `<span class="task-row-responsible">${respChips}</span>` : ''}
         <span class="task-row-status${overdue?' is-overdue':''}">${overdue ? 'просрочено' : labels[task.status]}</span>
         <span class="task-row-chevron${expanded?' open':''}" id="chev-${task.id}">▾</span>
       </div>
@@ -1650,44 +1774,74 @@ function renderTask(blockId, dirId, task) {
                 История${logCount>0?` (${logCount})`:''} ${histOpen?'▴':'▾'}
               </button>
             </div>
-            ${task.deadline ? `<div class="detail-group">
-              <span class="deadline-ru${task.deadline && isOverdue(task) ? ' overdue-date' : ''}">${formatDate(task.deadline)}</span>
-              <input type="date" class="deadline-input ${dlClass}" value="${esc(task.deadline||'')}"
+            ${task.deadline ? `<div class="detail-group" style="position:relative">
+              <span class="deadline-ru${task.deadline && isOverdue(task) ? ' overdue-date' : ''}"
+                    onclick="if(editMode)document.getElementById('dl-${task.id}').showPicker?.()">${formatDate(task.deadline)}</span>
+              <input type="date" id="dl-${task.id}" class="deadline-input ${dlClass}" value="${esc(task.deadline||'')}"
                      onchange="updateTaskDeadline('${blockId}','${dirId}','${task.id}',this.value)">
-            </div>` : `<div class="detail-group deadline-group-edit">
-              <input type="date" class="deadline-input ${dlClass}" value=""
+            </div>` : `<div class="detail-group deadline-group-edit" style="position:relative">
+              <button class="deadline-add-btn" onclick="document.getElementById('dl-${task.id}').showPicker?.()">+ дата</button>
+              <input type="date" id="dl-${task.id}" class="deadline-input" value=""
                      onchange="updateTaskDeadline('${blockId}','${dirId}','${task.id}',this.value)">
             </div>`}
-          </div>
-          <div class="detail-row">
             <div class="detail-group">
-              <div class="task-responsible">
-                ${(task.responsible||[]).map(r => `<span class="responsible-tag" onclick="removeResponsible('${blockId}','${dirId}','${task.id}','${esc(r)}')">${esc(r)}<span class="tag-remove"> ×</span></span>`).join('')}
+              <button class="detail-action-btn" id="resp-btn-${task.id}"
+                      onclick="showRespInput('${task.id}')" title="Добавить исполнителя">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="6" cy="4.5" r="2.8" fill="currentColor"/>
+                  <path d="M0.5 14c0-3.3 2.46-5.8 5.5-5.8s5.5 2.5 5.5 5.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                  <line x1="12.5" y1="7.5" x2="12.5" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  <line x1="10" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <div class="resp-icon-wrap" id="resp-wrap-${task.id}">
                 <div class="autocomplete-wrap">
-                  <input class="responsible-input" placeholder="+ добавить"
+                  <input class="resp-icon-input responsible-input" id="resp-inp-${task.id}"
+                         placeholder="Имя..."
                          oninput="showAC(this,'${blockId}','${dirId}','${task.id}')"
                          onkeydown="handleResponsibleKey(event,'${blockId}','${dirId}','${task.id}')"
-                         onblur="hideAC('${task.id}')">
+                         onblur="hideAC('${task.id}');hideRespInput('${task.id}')">
                   <div class="autocomplete-list" id="ac-${task.id}" style="display:none"></div>
                 </div>
               </div>
             </div>
+            <button class="detail-action-btn"
+                    onclick="triggerLogInput('${blockId}','${dirId}','${task.id}')" title="Добавить комментарий">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1.5" width="13" height="9.5" rx="1.8" stroke="currentColor" stroke-width="1.2"/>
+                <line x1="3.5" y1="5.5" x2="11.5" y2="5.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                <line x1="3.5" y1="8" x2="8.5" y2="8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                <path d="M3.5 11l-1.8 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button class="detail-action-btn detail-delete-btn" style="margin-left:auto"
+                    onclick="removeTask('${blockId}','${dirId}','${task.id}')" title="Удалить задачу">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="1,3.5 13,3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <rect x="3.5" y="3.5" width="7" height="8.5" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                <line x1="5.5" y1="1.5" x2="8.5" y2="1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="5.5" y1="6" x2="5.5" y2="9.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                <line x1="8.5" y1="6" x2="8.5" y2="9.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+            </button>
           </div>
+          ${(task.responsible||[]).length ? `<div class="detail-row detail-resp-mobile">
+            <div class="detail-group">
+              <span class="detail-label">Исп.</span>
+              <span class="detail-resp-names">${esc((task.responsible||[]).join(', '))}</span>
+            </div>
+          </div>` : ''}
         </div>
         <div class="history-section">
           <div class="history-body" id="hist-body-${task.id}" style="display:${histOpen?'block':'none'}">
             <div class="log-entries" id="log-entries-${task.id}">${renderLogEntries(task.log, blockId, dirId, task.id)}</div>
-            <div class="log-add">
+            <div class="log-add" id="log-add-${task.id}" style="display:none">
               <textarea class="log-input" id="log-input-${task.id}" rows="1"
-                        placeholder="Добавить запись... (Shift+Enter — новая строка)"
                         oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
-                        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addLogEntry('${blockId}','${dirId}','${task.id}')}"></textarea>
-              <button class="log-add-btn" onclick="addLogEntry('${blockId}','${dirId}','${task.id}')">Добавить</button>
+                        onkeydown="handleLogKey(event,'${blockId}','${dirId}','${task.id}')"></textarea>
+              <button class="log-cancel-btn" onclick="hideLogInput('${task.id}')" title="Отмена (Esc)">✕</button>
             </div>
           </div>
-        </div>
-        <div class="detail-footer">
-          <button class="task-delete-btn" onclick="removeTask('${blockId}','${dirId}','${task.id}')">Удалить задачу</button>
         </div>
       </div>
     </div>`;
@@ -1708,12 +1862,11 @@ function measureTextPx(text, el) {
 function autoResizeInput(inp) {
   if (!inp) return;
   const text = inp.value || inp.getAttribute('placeholder') || '';
-  const w = measureTextPx(text, inp) + 38; // ~1cm extra
+  const w = measureTextPx(text, inp) + 38;
   inp.style.width = Math.max(parseInt(inp.style.minWidth) || 40, w) + 'px';
 }
 function autoResizeAllInputs() {
-  document.querySelectorAll('.block-title-input, .direction-title-input')
-    .forEach(autoResizeInput);
+  document.querySelectorAll('.block-title-input, .direction-title-input').forEach(autoResizeInput);
 }
 
 // ── Export ────────────────────────────────────────────────────────────────────
