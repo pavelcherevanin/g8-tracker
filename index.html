@@ -87,6 +87,8 @@
   body.locked .detail-delete-btn   { display: none !important; }
   body.locked .btn-primary         { display: none !important; }
   body.locked .export-wrap .export-menu-item:last-child { display: none !important; } /* скрыть импорт */
+  /* Скрыть пустые обёртки detail-group (иконки скрыты) — убирает лишний gap перед датой */
+  body.locked .detail-group:has(> .detail-action-btn) { display: none; }
 
   /* ── Buttons ── */
   .btn {
@@ -460,7 +462,7 @@
   .hist-icon-btn { gap: 3px; }
   .hist-icon-btn.active { opacity: 1; color: var(--text); }
   .hist-count { font-family: 'Unbounded', sans-serif; font-size: 7.5px; color: inherit; }
-  .history-body { margin-top: 4px; padding: 4px 6px; background: var(--bg2); border: 1px solid var(--border); }
+  .history-body { position: relative; margin-top: 4px; padding: 4px 6px; background: var(--bg2); border: 1px solid var(--border); }
   .history-body:not(.showing-log):has(.log-entries:empty) { display: none !important; }
   .log-entries { display: grid; grid-template-columns: max-content 1fr max-content; column-gap: 6px; row-gap: 3px; margin-bottom: 2px; }
   .log-entries:empty { margin-bottom: 0; }
@@ -485,9 +487,10 @@
     min-height: 28px; overflow: hidden;
   }
   .log-new-btn {
-    display: block; background: none; border: none; cursor: pointer;
-    color: var(--text-dim); font-size: 11px; font-family: monospace;
-    padding: 0; opacity: 0; transition: opacity 0.15s; line-height: 1;
+    position: absolute; top: 3px; right: 5px;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-dim); font-size: 14px; font-family: monospace;
+    padding: 0 2px; opacity: 0; transition: opacity 0.15s; line-height: 1;
   }
   .history-body:hover .log-new-btn { opacity: 0.4; }
   .log-new-btn:hover { opacity: 1 !important; color: var(--lime); }
@@ -688,6 +691,8 @@
     .autocomplete-wrap, .task-row-chevron, .block-chevron,
     .block-color-swatch, .resp-chip-x, .log-new-btn, .log-add,
     .detail-action-btn, .detail-delete-btn, .resp-icon-wrap { display: none !important; }
+    /* Убрать пустые group-обёртки чтобы дата и исп. были на одном уровне */
+    .detail-group:has(> .detail-action-btn) { display: none !important; }
 
     /* ── Page flow — allow blocks to break across pages ── */
     .block, .block-body, .direction, .direction-tasks {
