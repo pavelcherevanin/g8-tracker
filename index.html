@@ -846,15 +846,6 @@ function getInitialData() {
 }
 
 async function loadData() {
-  if (editMode) {
-    try {
-      const r = localStorage.getItem(STORAGE_KEY);
-      if (r) {
-        const data = JSON.parse(r);
-        if (data.blocks && data.blocks.length > 0) return data;
-      }
-    } catch(e) {}
-  }
   try {
     const r = await fetch('data.json?v=' + Date.now());
     if (r.ok) {
@@ -902,10 +893,6 @@ function toggleEditMode() {
     if (pwd === EDIT_PASSWORD) {
       editMode = true;
       sessionStorage.setItem('g8-edit-mode', '1');
-      try {
-        const r = localStorage.getItem(STORAGE_KEY);
-        if (r) { const d = JSON.parse(r); if (d.blocks?.length) { state = d; renderAll(); } }
-      } catch(e) {}
       applyLockState();
     } else if (pwd !== null) {
       alert('Неверный пароль');
@@ -1466,12 +1453,17 @@ function deleteLog(blockId, dirId, taskId, idx) {
   const d = b && b.directions.find(d => d.id === dirId);
   const t = d && d.tasks.find(t => t.id === taskId);
   if (!t) return;
-  pushUndo();
   const short = (t.log[idx]?.text || '').slice(0, 40) || 'Запись';
-  t.log.splice(idx, 1);
-  saveData();
-  refreshLogEntries(blockId, dirId, taskId, t);
-  showToast(`«${short}» удалена`);
+  showConfirm(
+    `Удалить запись <strong>${esc(short)}</strong>?`,
+    () => {
+      pushUndo();
+      t.log.splice(idx, 1);
+      saveData();
+      refreshLogEntries(blockId, dirId, taskId, t);
+      showToast(`«${short}» удалена`);
+    }
+  );
 }
 
 // ── State mutations ───────────────────────────────────────────────────────────
@@ -1914,7 +1906,7 @@ function renderTask(blockId, dirId, task) {
   const expanded = expandedTasks.has(task.id);
   const histOpen = openHistories.has(task.id);
   const respChips = (task.responsible||[]).map(r =>
-    `<span class="resp-chip" title="Удалить" onclick="event.stopPropagation();removeResponsible('${blockId}','${dirId}','${task.id}','${esc(r)}')">${esc(r)}</span>`
+    `<span class="resp-chip"${editMode ? ' title="Удалить"' : ''} onclick="event.stopPropagation();removeResponsible('${blockId}','${dirId}','${task.id}','${esc(r)}')">${esc(r)}</span>`
   ).join('<span class="resp-sep">, </span>');
   const logCount = (task.log||[]).length;
   const dlClass = task.deadline && overdue ? 'overdue-date' : '';
@@ -2112,8 +2104,11 @@ function importJSON() {
         const data = JSON.parse(ev.target.result);
         if (!data.blocks) { alert('Файл не подходит — это не резервная копия G8 Tracker'); return; }
         if (!confirm(`Загрузить резервную копию?\n\nЭто заменит все текущие данные (${state.blocks.length} блоков → ${data.blocks.length} блоков).`)) return;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        location.reload();
+        state = data;
+        expandedTasks.clear();
+        openHistories.clear();
+        undoStack.length = 0;
+        renderAll();
       } catch(e) { alert('Ошибка чтения файла'); }
     };
     reader.readAsText(file);
