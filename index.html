@@ -767,21 +767,123 @@
     .direction { break-inside: avoid; page-break-inside: avoid; }
     .task-wrapper { break-inside: avoid; page-break-inside: avoid; }
   }
+
+  /* ── Two-panel shell ── */
+  html, body { height: 100%; }
+  body { overflow: hidden; }
+  .app-shell { display:flex; flex-direction:column; height:100vh; position:relative; z-index:1; overflow:hidden; }
+  .app-header { display:flex; align-items:center; gap:14px; padding:10px 20px; flex-shrink:0; background:var(--bg); border-bottom:1px solid var(--border); z-index:10; }
+  .hamburger-btn { display:none; align-items:center; justify-content:center; width:32px; height:32px; background:none; border:none; cursor:pointer; font-size:20px; color:var(--text); padding:0; flex-shrink:0; }
+  .filter-bar-wrap { flex-shrink:0; border-bottom:1px solid var(--border); background:var(--bg); }
+  .app-body { display:flex; flex:1; overflow:hidden; min-height:0; }
+  .left-panel { width:250px; flex-shrink:0; overflow-y:auto; background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; }
+  .right-panel { flex:1; overflow-y:auto; padding:24px 28px; min-width:0; }
+  .panel-overlay { display:none; position:fixed; inset:0; background:rgba(36,28,16,0.4); z-index:90; }
+  .panel-overlay.visible { display:block; }
+  .print-area { display:none; }
+
+  /* ── Nav ── */
+  .nav-overview { padding:10px 16px; font-size:9px; text-transform:uppercase; letter-spacing:1px; cursor:pointer; border-bottom:1px solid var(--border-light); color:var(--text-dim); transition:background 0.12s; }
+  .nav-overview:hover, .nav-overview.active { background:var(--bg3); color:var(--text); }
+  .nav-block { border-bottom:1px solid var(--border-light); }
+  .nav-block-header { display:flex; align-items:center; gap:6px; padding:6px 8px 6px 12px; }
+  .nav-block-name-input { font-family:'Unbounded',sans-serif; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; background:transparent; border:none; outline:none; color:inherit; flex:1; min-width:0; padding:0; }
+  body.locked .nav-block-name-input { pointer-events:none; cursor:default; }
+  .nav-block-color-btn { width:12px; height:12px; border-radius:50%; border:none; cursor:pointer; flex-shrink:0; }
+  body.locked .nav-block-color-btn { display:none; }
+  .nav-block-count { font-size:8px; color:var(--text-dim); flex-shrink:0; }
+  .nav-dir-item { display:flex; align-items:center; gap:6px; padding:5px 8px 5px 16px; cursor:pointer; border-bottom:1px solid var(--border-light); transition:background 0.1s; position:relative; }
+  .nav-dir-item:hover { background:var(--bg); }
+  .nav-dir-item.active { background:var(--lime-light); }
+  .nav-dir-name-wrap { flex:1; min-width:0; }
+  .nav-dir-name-input { font-family:'Unbounded',sans-serif; font-size:8px; background:transparent; border:none; outline:none; color:var(--text); width:100%; padding:0; pointer-events:none; }
+  .nav-dir-item.active .nav-dir-name-input { color:var(--lime-dim); font-weight:600; }
+  body:not(.locked) .nav-dir-name-input { pointer-events:auto; }
+  .nav-dir-bar { height:2px; background:var(--border); margin-top:2px; border-radius:1px; overflow:hidden; }
+  .nav-dir-bar-fill { height:100%; border-radius:1px; transition:width 0.3s; }
+  .nav-dir-count { font-size:7px; color:var(--text-dim); flex-shrink:0; white-space:nowrap; }
+  .nav-dir-dot { width:6px; height:6px; border-radius:50%; background:var(--red); flex-shrink:0; }
+  .nav-add-dir-btn { font-family:'Unbounded',sans-serif; font-size:7px; color:var(--text-dim); background:transparent; border:none; border-top:1px dashed var(--border); padding:5px 16px; cursor:pointer; text-transform:uppercase; letter-spacing:1px; display:none; width:100%; text-align:left; }
+  body:not(.locked) .nav-add-dir-btn { display:block; }
+  .nav-add-dir-btn:hover { color:var(--lime-dim); }
+  .nav-add-block-btn { font-family:'Unbounded',sans-serif; font-size:8px; color:var(--text-dim); background:transparent; border:1px dashed var(--border); padding:8px 12px; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin:10px 12px; display:none; }
+  body:not(.locked) .nav-add-block-btn { display:block; }
+  .nav-add-block-btn:hover { border-color:var(--lime-dim); color:var(--lime-dim); }
+  body.locked .nav-delete-btn { display:none; }
+
+  /* ── Overview ── */
+  .overview-wrap { max-width:900px; }
+  .overview-summary { font-size:11px; color:var(--text-dim); margin-bottom:24px; }
+  .overview-summary strong { color:var(--text); }
+  .overview-overdue { color:var(--red); margin-left:12px; }
+  .block-tiles-group { margin-bottom:24px; }
+  .block-tiles-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .block-tiles { display:flex; flex-wrap:wrap; gap:10px; }
+  .dir-tile { background:var(--bg2); border:1px solid var(--border); padding:12px 14px; width:180px; cursor:pointer; position:relative; transition:border-color 0.12s, background 0.12s; }
+  .dir-tile:hover { background:var(--bg3); border-color:var(--lime); }
+  .dir-tile-name { font-size:9px; font-weight:600; color:var(--text); margin-bottom:6px; line-height:1.3; word-break:break-word; }
+  .dir-tile-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin-bottom:5px; }
+  .dir-tile-bar-fill { height:100%; border-radius:2px; }
+  .dir-tile-count { font-size:8px; color:var(--text-dim); }
+  .dir-tile-dot { position:absolute; top:8px; right:8px; width:7px; height:7px; border-radius:50%; background:var(--red); }
+
+  /* ── Direction view ── */
+  .dir-view { max-width:900px; }
+  .dir-view-header { margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+  .dir-block-badge { display:inline-block; font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:3px 8px; color:#fff; margin-bottom:8px; }
+  .dir-title-display { font-size:18px; font-weight:700; color:var(--text); margin-bottom:10px; line-height:1.2; }
+  .dir-meta-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .dir-prog-bar { height:4px; background:var(--border); border-radius:2px; overflow:hidden; flex:1; min-width:80px; max-width:200px; }
+  .dir-prog-fill { height:100%; border-radius:2px; transition:width 0.3s; }
+  .dir-prog-text { font-size:9px; color:var(--text-dim); white-space:nowrap; }
+  .dir-expand-all-btn { font-family:'Unbounded',sans-serif; font-size:8px; background:none; border:none; cursor:pointer; color:var(--text-dim); text-transform:lowercase; padding:2px 6px; }
+  .dir-expand-all-btn:hover { color:var(--lime); }
+  .dir-add-task-btn { font-family:'Unbounded',sans-serif; font-size:8px; background:none; border:1px dashed var(--border); padding:4px 10px; cursor:pointer; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-left:auto; display:none; }
+  body:not(.locked) .dir-add-task-btn { display:inline-block; }
+  .dir-add-task-btn:hover { border-color:var(--lime-dim); color:var(--lime-dim); }
+
+  /* ── Status groups ── */
+  .status-group { margin-bottom:8px; border:1px solid var(--border-light); }
+  .status-group-header { display:flex; align-items:center; gap:8px; padding:7px 12px; background:var(--bg2); cursor:pointer; user-select:none; }
+  .status-group-header:hover { background:var(--bg3); }
+  .sg-chev { font-size:10px; color:var(--text-dim); transition:transform 0.15s; }
+  .sg-chev.open { transform:rotate(0deg); }
+  .sg-chev:not(.open) { transform:rotate(-90deg); }
+  .sg-label { font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-dim); }
+  .sg-count { font-size:8px; color:var(--text-dim); margin-left:auto; }
+  .status-group-body.collapsed { display:none; }
+
+  /* ── Mobile ── */
+  @media (max-width:700px) {
+    .hamburger-btn { display:flex; }
+    .app-header { padding:8px 14px; }
+    .left-panel { position:fixed; left:-260px; top:0; bottom:0; width:260px; transition:left 0.25s ease; z-index:95; }
+    .left-panel.mobile-open { left:0; }
+    .right-panel { padding:16px; }
+  }
+
+  /* ── Print override ── */
+  @media print {
+    .app-shell { display:none!important; }
+    .print-area { display:block!important; }
+    @page { size:A4 portrait; margin:0; }
+    * { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+    body { background:#fff; overflow:visible; }
+    body::before { display:none; }
+    .print-area { padding:10px 15mm 15mm; }
+  }
 </style>
 </head>
 <body class="locked">
-<div class="app">
-  <div class="header">
+<div class="app-shell">
+  <header class="app-header" id="app-header">
+    <button class="hamburger-btn" id="hamburger-btn" onclick="openMobileMenu()">☰</button>
     <img class="logo" src="data:image/png;base64,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" alt="G8" width="44" height="44" style="object-fit:contain;background:none;">
-    <div class="header-text">
-      <h1>G8 TRACKER</h1>
-      <span id="print-date" class="header-print-date"></span>
-    </div>
+    <div class="header-text"><h1>G8 TRACKER</h1></div>
     <div class="header-actions">
       <button class="lock-btn" id="lock-btn" onclick="toggleEditMode()" title="Режим редактирования">🔒</button>
-      <button class="btn btn-ghost" onclick="expandAll()"   title="Развернуть всё">▼ Все</button>
+      <button class="btn btn-ghost" onclick="expandAll()" title="Развернуть всё">▼ Все</button>
       <button class="btn btn-ghost" onclick="collapseAll()" title="Свернуть всё">▲ Все</button>
-      <button class="btn btn-primary" onclick="addBlock()">+ Блок</button>
       <div class="export-wrap" id="export-wrap">
         <button class="btn btn-ghost" onclick="toggleExportMenu()">Экспорт ▾</button>
         <div class="export-menu" id="export-menu">
@@ -792,31 +894,32 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="filter-bar">
-    <span class="filter-label">Фильтр</span>
-    <select class="filter-select" id="filter-responsible" onchange="setFilterResponsible(this.value)">
-      <option value="all">Все ответственные</option>
-    </select>
-    <div class="filter-divider"></div>
-    <div class="filter-btns">
-      <button class="filter-btn active" data-status="all"         onclick="setFilterStatus('all')">Все</button>
-      <button class="filter-btn"        data-status="todo"        onclick="setFilterStatus('todo')">Не начато</button>
-      <button class="filter-btn"        data-status="in-progress" onclick="setFilterStatus('in-progress')">В процессе</button>
-      <button class="filter-btn"        data-status="done"        onclick="setFilterStatus('done')">Готово</button>
-      <button class="filter-btn"        data-status="overdue"     onclick="setFilterStatus('overdue')">Просрочено</button>
+  </header>
+  <div class="filter-bar-wrap" id="filter-bar-wrap">
+    <div class="filter-bar">
+      <span class="filter-label">Фильтр</span>
+      <select class="filter-select" id="filter-responsible" onchange="setFilterResponsible(this.value)">
+        <option value="all">Все ответственные</option>
+      </select>
+      <div class="filter-divider"></div>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-status="all"         onclick="setFilterStatus('all')">Все</button>
+        <button class="filter-btn"        data-status="todo"        onclick="setFilterStatus('todo')">Не начато</button>
+        <button class="filter-btn"        data-status="in-progress" onclick="setFilterStatus('in-progress')">В процессе</button>
+        <button class="filter-btn"        data-status="done"        onclick="setFilterStatus('done')">Готово</button>
+        <button class="filter-btn"        data-status="overdue"     onclick="setFilterStatus('overdue')">Просрочено</button>
+      </div>
+      <button class="filter-reset" id="filter-reset" style="display:none" onclick="resetFilter()">✕ Сбросить</button>
     </div>
-    <button class="filter-reset" id="filter-reset" style="display:none" onclick="resetFilter()">✕ Сбросить</button>
   </div>
-
-  <div id="blocks-list" class="blocks-list"
-       ondragover="blocksListDragOver(event)"
-       ondrop="blocksListDrop(event)"></div>
-  <div id="empty-state" class="empty-state" style="display:none">
-    <div class="big">◈</div>Нет ни одного блока.<br>Нажми «+ Блок» чтобы начать.
+  <div class="app-body">
+    <nav class="left-panel" id="left-panel"></nav>
+    <div class="panel-overlay" id="panel-overlay" onclick="closeMobileMenu()"></div>
+    <main class="right-panel" id="right-panel"></main>
   </div>
 </div>
+
+<div class="print-area" id="print-area"></div>
 
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal">
@@ -837,6 +940,12 @@
 
 <script>
 const STORAGE_KEY = 'g8-tracker-v1';
+const NAV_KEY = 'g8-ui-nav';
+let selectedNav = null;
+const groupStates = new Map();
+let expandedTasks = new Set();
+let openHistories = new Set();
+
 function genId() { return Math.random().toString(36).slice(2, 10); }
 
 // ── Initial data fallback ─────────────────────────────────────────────────────
@@ -867,6 +976,17 @@ let state = { blocks: [] };
 
 async function init() {
   state = await loadData();
+  try {
+    const saved = localStorage.getItem(NAV_KEY);
+    if (saved && saved !== 'overview') {
+      const nav = JSON.parse(saved);
+      if (nav.blockId && nav.dirId) {
+        const b = state.blocks.find(b => b.id === nav.blockId);
+        const d = b && b.directions.find(d => d.id === nav.dirId);
+        if (b && d) selectedNav = nav;
+      }
+    }
+  } catch(e) {}
   await document.fonts.ready;
   renderAll();
   applyLockState();
@@ -905,9 +1025,6 @@ function toggleEditMode() {
     }
   }
 }
-const expandedTasks = new Set();
-const openHistories = new Set();
-
 // ── Undo ──────────────────────────────────────────────────────────────────────
 const undoStack = [];
 let toastTimer = null;
@@ -1181,27 +1298,7 @@ function updateStats() {
   sel.innerHTML = '<option value="all">Все ответственные</option>' +
     getAllResponsibles().map(n => `<option value="${esc(n)}"${n===cur?' selected':''}>${esc(n)}</option>`).join('');
 }
-function applyFilter() {
-  document.querySelectorAll('[data-task]').forEach(el => {
-    const taskId = el.dataset.task;
-    let task = null;
-    outer: for (const b of state.blocks) for (const d of b.directions) {
-      const t = d.tasks.find(t => t.id === taskId); if (t) { task = t; break outer; }
-    }
-    el.style.display = task && taskMatchesFilter(task) ? '' : 'none';
-  });
-  const isFiltered = filter.responsible !== 'all' || filter.status !== 'all';
-  document.querySelectorAll('[data-dir]').forEach(dirEl => {
-    if (!isFiltered) { dirEl.style.display = ''; return; }
-    const ws = Array.from(dirEl.querySelectorAll('[data-task]'));
-    dirEl.style.display = ws.some(w => w.style.display !== 'none') ? '' : 'none';
-  });
-  document.querySelectorAll('[data-block]').forEach(blockEl => {
-    if (!isFiltered) { blockEl.style.display = ''; return; }
-    const ds = Array.from(blockEl.querySelectorAll('[data-dir]'));
-    blockEl.style.display = ds.some(d => d.style.display !== 'none') ? '' : 'none';
-  });
-}
+function applyFilter() { renderNav(); renderRightPanel(); }
 
 // ── Task expand / history ─────────────────────────────────────────────────────
 function applyExpandAll(ids, open) {
@@ -1216,12 +1313,12 @@ function applyExpandAll(ids, open) {
     }
     hasLog ? openHistories.add(id) : openHistories.delete(id);
     const detail   = document.getElementById(`detail-${id}`);
-    const row      = document.getElementById(`row-${id}`);
+    const card     = document.getElementById(`card-${id}`);
     const chev     = document.getElementById(`chev-${id}`);
     const histBody = document.getElementById(`hist-body-${id}`);
     const histBtn  = document.getElementById(`hist-btn-${id}`);
     if (detail)   detail.style.display = open ? 'block' : 'none';
-    if (row)      row.classList.toggle('is-expanded', open);
+    if (card)     card.classList.toggle('is-expanded', open);
     if (chev)     chev.classList.toggle('open', open);
     if (histBody) histBody.style.display = hasLog ? 'block' : 'none';
     if (histBtn)  { histBtn.classList.toggle('open', hasLog); syncHistBtn(id, histBtn); }
@@ -1248,10 +1345,8 @@ function toggleAllTasksInDir(blockId, dirId) {
   const ids = matchedTaskIds(d.tasks);
   if (!ids.length) return;
   const allOpen = ids.every(id => expandedTasks.has(id));
-  if (!allOpen) expandDir(d);
   applyExpandAll(ids, !allOpen);
-  if (!allOpen) editMode ? saveData() : renderAll();
-  const btn = document.querySelector(`[data-dir="${dirId}"] .direction-header .expand-all-btn`);
+  const btn = document.querySelector('.dir-expand-all-btn');
   if (btn) btn.textContent = allOpen ? 'раскрыть все' : 'скрыть все';
 }
 function toggleAllTasksInBlock(blockId) {
@@ -1274,10 +1369,10 @@ function editTaskTitle(taskId) {
   const span = document.getElementById(`task-title-${taskId}`);
   const inp  = document.getElementById(`task-inp-${taskId}`);
   if (!span || !inp) return;
-  const row = document.getElementById(`row-${taskId}`);
+  const card = document.getElementById(`card-${taskId}`);
   span.style.display = 'none';
   inp.style.display = 'block';
-  row?.classList.add('editing');
+  card?.classList.add('editing');
   inp.focus();
   inp.select();
 }
@@ -1285,19 +1380,19 @@ function endEditTitle(taskId) {
   const span = document.getElementById(`task-title-${taskId}`);
   const inp  = document.getElementById(`task-inp-${taskId}`);
   if (!inp) return;
-  const row = document.getElementById(`row-${taskId}`);
+  const card = document.getElementById(`card-${taskId}`);
   inp.style.display = 'none';
-  row?.classList.remove('editing');
+  card?.classList.remove('editing');
   if (span) span.style.display = '';
 }
 function toggleTask(taskId) {
   expandedTasks.has(taskId) ? expandedTasks.delete(taskId) : expandedTasks.add(taskId);
   const detail = document.getElementById(`detail-${taskId}`);
-  const row    = document.getElementById(`row-${taskId}`);
+  const card   = document.getElementById(`card-${taskId}`);
   const chev   = document.getElementById(`chev-${taskId}`);
   const open   = expandedTasks.has(taskId);
   if (detail) detail.style.display = open ? 'block' : 'none';
-  if (row)    row.classList.toggle('is-expanded', open);
+  if (card)   card.classList.toggle('is-expanded', open);
   if (chev)   chev.classList.toggle('open', open);
   if (open && !openHistories.has(taskId)) {
     let logCount = 0;
@@ -1480,7 +1575,7 @@ function addBlock() {
   state.blocks.push({ id: genId(), title: '', collapsed: true, color: pickNextColor(), directions: [] });
   saveData();
   setTimeout(() => {
-    const inputs = document.querySelectorAll('.block-title-input');
+    const inputs = document.querySelectorAll('.nav-block-name-input');
     if (inputs.length) { const el = inputs[inputs.length-1]; el.focus(); el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   }, 50);
 }
@@ -1494,6 +1589,7 @@ function removeBlock(blockId) {
     `Удалить блок <strong>${esc(name) || '(без названия)'}</strong>${details ? `<br><span style="font-size:9px">${details}</span>` : ''}?`,
     () => {
       pushUndo();
+      if (selectedNav && selectedNav.blockId === blockId) { selectedNav = null; localStorage.setItem(NAV_KEY,'overview'); }
       state.blocks = state.blocks.filter(b => b.id !== blockId);
       saveData();
       showToast(`Блок «${name}» удалён`);
@@ -1511,29 +1607,20 @@ function updateBlockColor(blockId, color) {
   if (b) {
     b.color = color;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    const colors = getBlockColors(color);
-    const header = document.querySelector(`[data-block="${blockId}"] .block-header`);
-    if (header) {
-      header.style.setProperty('--block-color', color);
-      header.style.setProperty('--block-text', colors.text);
-      header.style.setProperty('--block-text-dim', colors.textDim);
-      header.style.setProperty('--block-bar-bg', colors.barBg);
-      header.style.setProperty('--block-bar-fill', colors.barFill);
-    }
-    document.querySelectorAll(`[data-block="${blockId}"] .dir-title-wrap`)
-      .forEach(wrap => { wrap.style.setProperty('--dir-underline', color); });
-    const swatch = document.querySelector(`[data-block="${blockId}"] .color-swatch-btn`);
-    if (swatch) swatch.style.background = color;
+    renderNav();
+    if (selectedNav && selectedNav.blockId === blockId) renderRightPanel();
   }
 }
 function addDirection(blockId) {
   const b = state.blocks.find(b => b.id === blockId); if (!b) return;
-  b.collapsed = false;
-  b.directions.push({ id: genId(), title: '', description: '', collapsed: false, tasks: [] });
+  const newId = genId();
+  b.directions.push({ id: newId, title: '', description: '', collapsed: false, tasks: [] });
+  selectedNav = { blockId, dirId: newId };
+  localStorage.setItem(NAV_KEY, JSON.stringify(selectedNav));
   saveData();
   setTimeout(() => {
-    const inputs = document.querySelectorAll(`[data-block="${blockId}"] .direction-title-input`);
-    if (inputs.length) { const el = inputs[inputs.length-1]; el.focus(); el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+    const inp = document.querySelector(`[data-dir="${newId}"] .nav-dir-name-input`);
+    if (inp) { inp.focus(); inp.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   }, 50);
 }
 function removeDirection(blockId, dirId) {
@@ -1545,6 +1632,7 @@ function removeDirection(blockId, dirId) {
     `Удалить направление <strong>${esc(name) || '(без названия)'}</strong>${taskCount ? `<br><span style="font-size:9px">${taskCount} задач внутри</span>` : ''}?`,
     () => {
       pushUndo();
+      if (selectedNav && selectedNav.blockId === blockId && selectedNav.dirId === dirId) { selectedNav = null; localStorage.setItem(NAV_KEY,'overview'); }
       if (b) { b.directions = b.directions.filter(d => d.id !== dirId); saveData(); }
       showToast(`Направление «${name}» удалено`);
     }
@@ -1811,22 +1899,9 @@ function selectBlockColor(blockId, color) {
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function renderAll() {
-  const container = document.getElementById('blocks-list');
-  const empty = document.getElementById('empty-state');
-  const focused = document.activeElement;
-  const focusedId = focused ? focused.dataset.focusId : null;
-
-  container.innerHTML = '';
-  if (state.blocks.length === 0) { empty.style.display = 'block'; }
-  else { empty.style.display = 'none'; state.blocks.forEach(b => container.appendChild(renderBlock(b))); }
-
-  if (focusedId) {
-    const el = document.querySelector(`[data-focus-id="${focusedId}"]`);
-    if (el) { el.focus(); if (el.setSelectionRange) { const l = el.value.length; el.setSelectionRange(l,l); } }
-  }
-
-  autoResizeAllInputs();
-  updateStats(); applyFilter();
+  renderNav();
+  renderRightPanel();
+  updateStats();
 }
 
 function renderBlock(block) {
@@ -2128,37 +2203,320 @@ function importJSON() {
 
 // ── Collapse / Expand all ─────────────────────────────────────────────────────
 function collapseAll() {
-  state.blocks.forEach(b => {
-    b.collapsed = true;
-    b.directions.forEach(d => { d.collapsed = true; });
+  expandedTasks.forEach(id => {
+    const detail = document.getElementById(`detail-${id}`);
+    const card   = document.getElementById(`card-${id}`);
+    const chev   = document.getElementById(`chev-${id}`);
+    if (detail) detail.style.display = 'none';
+    if (card)   card.classList.remove('is-expanded');
+    if (chev)   chev.classList.remove('open');
   });
-  editMode ? saveData() : renderAll();
+  expandedTasks.clear();
 }
 
 function expandAll() {
-  state.blocks.forEach(b => {
-    b.collapsed = false;
-    b.directions.forEach(d => { d.collapsed = false; });
-  });
-  editMode ? saveData() : renderAll();
+  if (!selectedNav) return;
+  const { blockId, dirId } = selectedNav;
+  const b = state.blocks.find(b => b.id === blockId);
+  const d = b && b.directions.find(d => d.id === dirId);
+  if (!d) return;
+  const ids = d.tasks.filter(t => taskMatchesFilter(t)).map(t => t.id);
+  applyExpandAll(ids, true);
 }
 
 // ── Print / PDF ───────────────────────────────────────────────────────────────
-window.addEventListener('beforeprint', () => {
+function populatePrintArea() {
+  const area = document.getElementById('print-area');
+  const logoEl = document.querySelector('.app-header .logo');
+  const logoSrc = logoEl ? logoEl.src : '';
   const now = new Date();
-  const dateStr = now.toLocaleString('ru', { dateStyle: 'short', timeStyle: 'short' });
-  const el = document.getElementById('print-date');
-  if (el) el.textContent = dateStr;
-  // Имя PDF-файла = заголовок страницы
-  const fileDate = now.toLocaleDateString('ru', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  document.title = `G8 Tracker ${fileDate}`;
-});
+  const dateStr = now.toLocaleString('ru', { dateStyle:'short', timeStyle:'short' });
+  document.title = `G8 Tracker ${now.toLocaleDateString('ru', {day:'2-digit',month:'2-digit',year:'numeric'})}`;
+  area.innerHTML = `<div class="print-hdr"><img src="${logoSrc}" width="30" height="30" style="object-fit:contain"><div><strong style="font-size:14px">G8 TRACKER</strong> <span style="font-size:11px;color:#888">${esc(dateStr)}</span></div></div>`;
+  const wrap = document.createElement('div');
+  wrap.className = 'blocks-list';
+  state.blocks.forEach(b => wrap.appendChild(renderBlock(b)));
+  area.appendChild(wrap);
+}
+
 window.addEventListener('afterprint', () => {
   document.title = 'G8 Tracker';
+  const area = document.getElementById('print-area');
+  if (area) area.innerHTML = '';
 });
 
 function printPDF() {
+  populatePrintArea();
   window.print();
+}
+
+// ── Two-panel navigation ──────────────────────────────────────────────────────
+function isGroupCollapsed(dirId, groupKey) {
+  const key = `${dirId}-${groupKey}`;
+  if (groupStates.has(key)) return groupStates.get(key);
+  return groupKey === 'done';
+}
+
+function toggleStatusGroup(dirId, groupKey) {
+  const key = `${dirId}-${groupKey}`;
+  groupStates.set(key, !isGroupCollapsed(dirId, groupKey));
+  const group = document.querySelector(`.status-group[data-group-key="${groupKey}"][data-dir-id="${dirId}"]`);
+  if (group) {
+    const body = group.querySelector('.status-group-body');
+    const chev = group.querySelector('.sg-chev');
+    const collapsed = isGroupCollapsed(dirId, groupKey);
+    if (body) body.classList.toggle('collapsed', collapsed);
+    if (chev) chev.classList.toggle('open', !collapsed);
+  }
+}
+
+function navigateTo(blockId, dirId) {
+  selectedNav = { blockId, dirId };
+  localStorage.setItem(NAV_KEY, JSON.stringify(selectedNav));
+  closeMobileMenu();
+  renderNav();
+  renderRightPanel();
+}
+
+function navigateToOverview() {
+  selectedNav = null;
+  localStorage.setItem(NAV_KEY, 'overview');
+  closeMobileMenu();
+  renderNav();
+  renderRightPanel();
+}
+
+function closeMobileMenu() {
+  document.getElementById('left-panel')?.classList.remove('mobile-open');
+  document.getElementById('panel-overlay')?.classList.remove('visible');
+}
+
+function openMobileMenu() {
+  document.getElementById('left-panel')?.classList.add('mobile-open');
+  document.getElementById('panel-overlay')?.classList.add('visible');
+}
+
+function renderNav() {
+  const nav = document.getElementById('left-panel');
+  if (!nav) return;
+  let html = '';
+  const overviewActive = selectedNav === null;
+  html += `<div class="nav-overview${overviewActive?' active':''}" onclick="navigateToOverview()">Обзор</div>`;
+  html += `<div class="nav-blocks-container" ondragover="blocksListDragOver(event)" ondrop="blocksListDrop(event)">`;
+  state.blocks.forEach(block => {
+    const blockColor = block.color || '#7a9e00';
+    const prog = blockProgress(block);
+    const colors = getBlockColors(blockColor);
+    html += `<div class="nav-block" data-block="${block.id}" draggable="${editMode}" ondragstart="blockDragStart(event,'${block.id}')" ondragend="blockDragEnd(event,'${block.id}')">`;
+    html += `<div class="nav-block-header" style="background:${blockColor};color:${colors.text}">
+      <span class="block-drag-handle" onclick="event.stopPropagation()">⠿</span>
+      <input class="nav-block-name-input" placeholder="Блок..." value="${esc(block.title)}"
+        style="color:${colors.text}"
+        onclick="event.stopPropagation()"
+        oninput="updateBlockTitle('${block.id}',this.value)">
+      ${prog ? `<span class="nav-block-count" style="color:${colors.textDim}">${prog.done}/${prog.total}</span>` : ''}
+      <button class="nav-block-color-btn" style="background:${blockColor};border:2px solid ${colors.text}40" onclick="event.stopPropagation();openColorPalette('${block.id}',this)"></button>
+      <button class="btn btn-danger nav-delete-btn" onclick="event.stopPropagation();removeBlock('${block.id}')">✕</button>
+    </div>`;
+    html += `<div class="nav-dirs" data-block-dirs="${block.id}" ondragover="dirsListDragOver(event,'${block.id}')" ondrop="dirsListDrop(event,'${block.id}')">`;
+    block.directions.forEach(dir => {
+      const dirActive = selectedNav && selectedNav.blockId === block.id && selectedNav.dirId === dir.id;
+      const dirTotal = dir.tasks.length;
+      const dirDone = dir.tasks.filter(t => t.status === 'done').length;
+      const dirPct = dirTotal > 0 ? Math.round((dirDone/dirTotal)*100) : 0;
+      const dirOverdue = dir.tasks.some(t => isOverdue(t));
+      html += `<div class="nav-dir-item${dirActive?' active':''}" data-dir="${dir.id}"
+        draggable="${editMode}"
+        ondragstart="dirDragStart(event,'${block.id}','${dir.id}')"
+        ondragend="dirDragEnd(event,'${block.id}','${dir.id}')"
+        onclick="navigateTo('${block.id}','${dir.id}')">
+        <span class="dir-drag-handle" onclick="event.stopPropagation()">⠿</span>
+        <div class="nav-dir-name-wrap">
+          <input class="nav-dir-name-input" placeholder="Направление..." value="${esc(dir.title)}"
+            onclick="event.stopPropagation()"
+            oninput="updateDirectionTitle('${block.id}','${dir.id}',this.value)">
+          <div class="nav-dir-bar"><div class="nav-dir-bar-fill" style="width:${dirPct}%;background:${blockColor}"></div></div>
+        </div>
+        <span class="nav-dir-count">${dirDone}/${dirTotal}</span>
+        ${dirOverdue ? `<span class="nav-dir-dot"></span>` : ''}
+        <button class="btn btn-danger nav-delete-btn" onclick="event.stopPropagation();removeDirection('${block.id}','${dir.id}')">✕</button>
+      </div>`;
+    });
+    html += `</div>`;
+    html += `<button class="nav-add-dir-btn" onclick="addDirection('${block.id}')">+ направление</button>`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+  html += `<button class="nav-add-block-btn" onclick="addBlock()">+ блок</button>`;
+  nav.innerHTML = html;
+}
+
+function renderRightPanel() {
+  const panel = document.getElementById('right-panel');
+  if (!panel) return;
+  if (!selectedNav) { renderOverview(panel); return; }
+  const { blockId, dirId } = selectedNav;
+  const b = state.blocks.find(b => b.id === blockId);
+  const d = b && b.directions.find(d => d.id === dirId);
+  if (!b || !d) { selectedNav = null; localStorage.setItem(NAV_KEY,'overview'); renderOverview(panel); return; }
+  renderDirView(panel, b, d);
+}
+
+function renderOverview(panel) {
+  let total = 0, done = 0, overdue = 0;
+  state.blocks.forEach(b => b.directions.forEach(d => d.tasks.forEach(t => {
+    total++; if (t.status==='done') done++; if (isOverdue(t)) overdue++;
+  })));
+  let html = `<div class="overview-wrap">
+    <div class="overview-summary">
+      <strong>${done} из ${total}</strong> выполнено
+      ${overdue ? `<span class="overview-overdue">${overdue} просрочено</span>` : ''}
+    </div>`;
+  state.blocks.forEach(b => {
+    if (!b.directions.length) return;
+    const blockColor = b.color || '#7a9e00';
+    html += `<div class="block-tiles-group">
+      <div class="block-tiles-label" style="color:${blockColor}">${esc(b.title||'(без названия)')}</div>
+      <div class="block-tiles">`;
+    b.directions.forEach(d => {
+      const t = d.tasks.length;
+      const dn = d.tasks.filter(t=>t.status==='done').length;
+      const pct = t>0 ? Math.round((dn/t)*100) : 0;
+      const od = d.tasks.some(t=>isOverdue(t));
+      html += `<div class="dir-tile" onclick="navigateTo('${b.id}','${d.id}')">
+        ${od ? `<span class="dir-tile-dot"></span>` : ''}
+        <div class="dir-tile-name">${esc(d.title||'(без названия)')}</div>
+        <div class="dir-tile-bar"><div class="dir-tile-bar-fill" style="width:${pct}%;background:${blockColor}"></div></div>
+        <div class="dir-tile-count">${dn}/${t}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  if (state.blocks.length === 0) {
+    html += `<div style="color:var(--text-dim);font-size:11px;text-align:center;padding:40px 0">◈ Нет блоков. Нажмите «+ блок» в левой панели.</div>`;
+  }
+  html += `</div>`;
+  panel.innerHTML = html;
+}
+
+function renderDirView(panel, block, dir) {
+  const blockColor = block.color || '#7a9e00';
+  const colors = getBlockColors(blockColor);
+  const total = dir.tasks.length;
+  const done = dir.tasks.filter(t=>t.status==='done').length;
+  const pct = total>0 ? Math.round((done/total)*100) : 0;
+  const overdueTasks    = dir.tasks.filter(t=>taskMatchesFilter(t)&&isOverdue(t));
+  const inProgressTasks = dir.tasks.filter(t=>taskMatchesFilter(t)&&t.status==='in-progress'&&!isOverdue(t));
+  const todoTasks       = dir.tasks.filter(t=>taskMatchesFilter(t)&&t.status==='todo'&&!isOverdue(t));
+  const doneTasks       = dir.tasks.filter(t=>taskMatchesFilter(t)&&t.status==='done');
+  let html = `<div class="dir-view">
+    <div class="dir-view-header">
+      <div class="dir-block-badge" style="background:${blockColor};color:${colors.text}">${esc(block.title||'—')}</div>
+      <div class="dir-title-display">${esc(dir.title||'(без названия)')}</div>
+      <div class="dir-meta-row">
+        <div class="dir-prog-bar"><div class="dir-prog-fill" style="width:${pct}%;background:${blockColor}"></div></div>
+        <span class="dir-prog-text">${done} из ${total} выполнено</span>
+        <button class="dir-expand-all-btn" onclick="toggleAllTasksInDir('${block.id}','${dir.id}')">раскрыть все</button>
+        <button class="dir-add-task-btn" onclick="addTask('${block.id}','${dir.id}')">+ задача</button>
+      </div>
+    </div>`;
+  const groups = [
+    { key:'overdue',     label:'Просрочено',  tasks:overdueTasks },
+    { key:'in-progress', label:'В процессе',  tasks:inProgressTasks },
+    { key:'todo',        label:'Не начато',   tasks:todoTasks },
+    { key:'done',        label:'Готово',      tasks:doneTasks }
+  ];
+  groups.forEach(({key, label, tasks}) => {
+    if (!tasks.length) return;
+    const collapsed = isGroupCollapsed(dir.id, key);
+    html += `<div class="status-group" data-group-key="${key}" data-dir-id="${dir.id}">
+      <div class="status-group-header" onclick="toggleStatusGroup('${dir.id}','${key}')">
+        <span class="sg-chev${collapsed?'':' open'}">▾</span>
+        <span class="sg-label">${label}</span>
+        <span class="sg-count">${tasks.length}</span>
+      </div>
+      <div class="status-group-body${collapsed?' collapsed':''}" ondragover="listDragOver(event,'${dir.id}')" ondrop="listDrop(event,'${block.id}','${dir.id}')">`;
+
+    tasks.forEach(t => { html += renderTaskCard(block.id, dir.id, t); });
+    html += `</div></div>`;
+  });
+  if (!overdueTasks.length && !inProgressTasks.length && !todoTasks.length && !doneTasks.length) {
+    html += `<div style="color:var(--text-dim);font-size:11px;padding:24px 0">Нет задач. Нажмите «+ задача» чтобы добавить.</div>`;
+  }
+  html += `</div>`;
+  panel.innerHTML = html;
+}
+
+function renderTaskCard(blockId, dirId, task) {
+  const labels = { todo:'не начато', 'in-progress':'в процессе', done:'готово' };
+  const overdue = isOverdue(task);
+  const expanded = expandedTasks.has(task.id);
+  const histOpen = openHistories.has(task.id);
+  const respChips = (task.responsible||[]).map(r =>
+    `<span class="resp-chip"${editMode?' title="Удалить"':''} onclick="event.stopPropagation();removeResponsible('${blockId}','${dirId}','${task.id}','${esc(r)}')">${esc(r)}</span>`
+  ).join('<span class="resp-sep">, </span>');
+  const logCount = (task.log||[]).length;
+  const dlClass = task.deadline && overdue ? 'overdue-date' : '';
+  return `
+    <div class="task-wrapper status-${task.status}${overdue?' overdue':''}" data-task="${task.id}">
+      <div class="task-row${expanded?' is-expanded':''}" id="card-${task.id}">
+        <span class="drag-handle" draggable="true" ondragstart="taskDragStart(event,'${blockId}','${dirId}','${task.id}')" ondragend="taskDragEnd(event,'${task.id}')">⠿</span>
+        <span class="status-dot" style="background:${dotColor(task)}" title="Сменить статус" onclick="cycleTaskStatus('${blockId}','${dirId}','${task.id}')"></span>
+        <span class="task-title-full" id="task-title-${task.id}" onclick="editTaskTitle('${task.id}')">${esc(task.text)}</span>
+        <input class="task-row-input" id="task-inp-${task.id}" placeholder="Задача..." value="${esc(task.text)}" data-focus-id="task-text-${task.id}" onblur="endEditTitle('${task.id}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" oninput="updateTaskText('${blockId}','${dirId}','${task.id}',this.value)">
+        <div class="task-row-expander" onclick="toggleTask('${task.id}')"></div>
+        ${respChips ? `<span class="task-row-responsible">${respChips}</span>` : ''}
+        <span class="task-row-status${overdue?' is-overdue':''}">${overdue ? 'просрочено' : labels[task.status]}</span>
+        <span class="task-row-chevron${expanded?' open':''}" id="chev-${task.id}" onclick="toggleTask('${task.id}')">▾</span>
+      </div>
+      <div class="task-detail" id="detail-${task.id}" style="display:${expanded?'block':'none'}">
+        <div class="detail-inline">
+          <div class="detail-row">
+            <div class="detail-group">
+              <button class="detail-action-btn hist-icon-btn${histOpen?' active':''}" id="hist-btn-${task.id}" onclick="toggleHistory('${task.id}')" title="История задачи">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13 5h8"/><path d="M13 9h5"/><path d="M13 15h8"/><path d="M13 19h5"/><rect x="3" y="4" width="6" height="6" rx="1"/><rect x="3" y="14" width="6" height="6" rx="1"/></svg>
+                ${logCount>0?`<span class="hist-count">${logCount}</span>`:''}
+              </button>
+            </div>
+            ${task.deadline ? `<div class="detail-group" style="position:relative">
+              <span class="deadline-ru${isOverdue(task)?' overdue-date':''}" onclick="if(editMode)document.getElementById('dl-${task.id}').showPicker?.()">${formatDate(task.deadline)}</span>
+              <input type="date" id="dl-${task.id}" class="deadline-input ${dlClass}" value="${esc(task.deadline||'')}" onchange="updateTaskDeadline('${blockId}','${dirId}','${task.id}',this.value)">
+            </div>` : `<div class="detail-group deadline-group-edit" style="position:relative">
+              <button class="deadline-add-btn" onclick="document.getElementById('dl-${task.id}').showPicker?.()">+ дата</button>
+              <input type="date" id="dl-${task.id}" class="deadline-input" value="" onchange="updateTaskDeadline('${blockId}','${dirId}','${task.id}',this.value)">
+            </div>`}
+            <div class="detail-group">
+              <button class="detail-action-btn" id="resp-btn-${task.id}" onclick="showRespInput('${task.id}')" title="Добавить исполнителя">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="4.5" r="2.8" fill="currentColor"/><path d="M0.5 14c0-3.3 2.46-5.8 5.5-5.8s5.5 2.5 5.5 5.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/><line x1="12.5" y1="7.5" x2="12.5" y2="12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="10" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </button>
+              <div class="resp-icon-wrap" id="resp-wrap-${task.id}">
+                <div class="autocomplete-wrap">
+                  <input class="resp-icon-input responsible-input" id="resp-inp-${task.id}" placeholder="Имя..." oninput="showAC(this,'${blockId}','${dirId}','${task.id}')" onkeydown="handleResponsibleKey(event,'${blockId}','${dirId}','${task.id}')" onblur="hideAC('${task.id}');hideRespInput('${task.id}')">
+                  <div class="autocomplete-list" id="ac-${task.id}" style="display:none"></div>
+                </div>
+              </div>
+            </div>
+            <button class="detail-action-btn" onclick="triggerLogInput('${blockId}','${dirId}','${task.id}')" title="Добавить комментарий">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1.5" width="13" height="9.5" rx="1.8" stroke="currentColor" stroke-width="1.2"/><line x1="3.5" y1="5.5" x2="11.5" y2="5.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="3.5" y1="8" x2="8.5" y2="8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M3.5 11l-1.8 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </button>
+            <button class="detail-action-btn detail-delete-btn" style="margin-left:auto" onclick="removeTask('${blockId}','${dirId}','${task.id}')" title="Удалить задачу">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="1,3.5 13,3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><rect x="3.5" y="3.5" width="7" height="8.5" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="5.5" y1="1.5" x2="8.5" y2="1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="5.5" y1="6" x2="5.5" y2="9.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="8.5" y1="6" x2="8.5" y2="9.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          ${(task.responsible||[]).length ? `<div class="detail-row detail-resp-mobile"><div class="detail-group"><span class="detail-label">Исп.</span><span class="detail-resp-names">${esc((task.responsible||[]).join(', '))}</span></div></div>` : ''}
+        </div>
+        <div class="history-section">
+          <div class="history-body" id="hist-body-${task.id}" style="display:${histOpen?'block':'none'}">
+            <div class="log-entries" id="log-entries-${task.id}">${renderLogEntries(task.log, blockId, dirId, task.id)}</div>
+            <button class="log-new-btn" id="log-new-btn-${task.id}" onclick="showLogInput('${blockId}','${dirId}','${task.id}')">+</button>
+            <div class="log-add" id="log-add-${task.id}" style="display:none">
+              <textarea class="log-input" id="log-input-${task.id}" rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" onkeydown="handleLogKey(event,'${blockId}','${dirId}','${task.id}')"></textarea>
+              <button class="log-cancel-btn" onclick="hideLogInput('${task.id}')" title="Отмена (Esc)">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
 }
 
 init();
