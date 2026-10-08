@@ -31,6 +31,11 @@
     --card-line: #E6DFCC;
     --note-bg: #F3EEE0;
     --note-text: #5E5340;
+    --dir-line: #E2D9C3;
+    --dir-head: #F1EAD9;
+    --task-line: #EEE7D6;
+    --comment-bg: #F3EEE0;
+    --comment-text: #6E6250;
     --status-active: #B5AA92;
     --status-done: #8FAA5C;
     --done-text: #A39880;
@@ -323,10 +328,11 @@
   .link-btn { border: none; background: transparent; padding: 0; font-size: 12px; font-weight: 700; color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
   .map-empty { margin-top: 24px; padding: 24px 20px; border: 1px dashed var(--line-strong); border-radius: 10px; text-align: center; font-size: 14px; color: var(--text-2); }
 
+  /* Блок — насыщенная плашка */
   .map-block { margin-top: 10px; }
   .block-sticky { position: sticky; top: 0; z-index: 5; padding-top: 10px; background: var(--page); }
   .block-plate {
-    display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 8px 6px 6px; border-radius: 8px;
+    display: flex; align-items: center; gap: 8px; min-height: 50px; padding: 7px 10px 7px 8px; border-radius: 10px;
     background: var(--bc); color: var(--bt); cursor: pointer;
   }
   .plate-chev, .plate-btn {
@@ -337,66 +343,82 @@
   .plate-chev:hover, .plate-btn:hover { background: color-mix(in srgb, currentColor 14%, transparent); opacity: 1; }
   .map-block.is-collapsed .plate-chev { transform: rotate(-90deg); }
   .plate-title {
-    flex: 0 1 auto; min-width: 0; font-family: var(--font-display); font-weight: 700; font-size: 16px; line-height: 1.3; letter-spacing: .02em;
+    flex: 0 1 auto; min-width: 0; font-family: var(--font-display); font-weight: 700; font-size: 18px; line-height: 1.3; letter-spacing: .02em;
     overflow-wrap: break-word; outline: none; border-radius: 4px;
   }
   .plate-title:empty::before { content: attr(data-placeholder); opacity: .55; }
   body:not(.locked) .plate-title { cursor: text; }
   .plate-title[contenteditable="true"]:focus { box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 30%, transparent); }
-  .plate-count { flex-shrink: 0; margin-left: auto; font-size: 12px; font-weight: 600; opacity: .72; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .plate-count { flex-shrink: 0; margin-left: auto; font-size: 12px; font-weight: 600; opacity: .75; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .plate-actions { display: inline-flex; gap: 2px; flex-shrink: 0; }
   .plate-btn { opacity: .6; }
   .plate-btn svg { width: 16px; height: 16px; }
-  .block-body { padding-bottom: 6px; }
+  .block-body { padding-bottom: 14px; }
   .map-block.is-collapsed .block-body { display: none; }
-  .block-plate.is-match .plate-title, .dir-header.is-match .dir-title { text-decoration: none; }
   .block-plate.is-current-match { box-shadow: 0 0 0 3px var(--lime-ring); }
+  .block-empty { padding: 12px 0 0 8px; font-size: 12px; color: var(--text-3); }
 
-  .map-dir { margin-top: 16px; scroll-margin-top: 62px; }
-  .dir-header { display: flex; align-items: flex-start; gap: 4px; padding: 2px 4px 4px 0; cursor: pointer; border-radius: 7px; }
-  .dir-header.is-current-match, .dir-header.is-flash { background: rgba(220,240,74,.22); }
-  .dir-header.is-flash { transition: background .8s; }
+  /* Направление — карточка; задачи внутри неё */
+  .map-dir {
+    position: relative; margin-top: 12px; scroll-margin-top: 72px;
+    background: var(--card); border: 1px solid var(--dir-line); border-radius: 10px;
+  }
+  .dir-header {
+    display: flex; align-items: flex-start; gap: 6px; padding: 9px 12px 9px 8px; cursor: pointer;
+    background: var(--dir-head); border-radius: 9px 9px 0 0;
+  }
+  .map-dir.is-collapsed .dir-header { border-radius: 9px; }
+  .dir-header.is-current-match, .dir-header.is-flash { background-image: linear-gradient(rgba(220,240,74,.38), rgba(220,240,74,.38)); }
+  .dir-header.is-flash { transition: background-image .8s; }
   .dir-chev {
     width: 24px; height: 24px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
-    border: none; border-radius: 6px; background: transparent; color: var(--text-3); transition: transform .15s, background .12s, color .12s;
+    border: none; border-radius: 6px; background: transparent; color: var(--text-2); transition: transform .15s, background .12s, color .12s;
   }
   .dir-chev svg { width: 15px; height: 15px; }
-  .dir-chev:hover { background: var(--note-bg); color: var(--text); }
+  .dir-chev:hover { background: rgba(42,31,18,.07); color: var(--text); }
   .map-dir.is-collapsed .dir-chev { transform: rotate(-90deg); }
-  .dir-title { flex: 0 1 auto; min-width: 0; padding-top: 1px; font-size: 15px; font-weight: 700; line-height: 1.4; overflow-wrap: break-word; outline: none; border-radius: 4px; }
+  .dir-title {
+    flex: 0 1 auto; min-width: 0; padding-top: 1px; font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--text);
+    text-decoration: underline 2px var(--bc); text-underline-offset: 5px; text-decoration-skip-ink: none;
+    overflow-wrap: break-word; outline: none; border-radius: 4px;
+  }
   .dir-title:empty::before { content: attr(data-placeholder); color: var(--text-3); font-weight: 600; }
   body:not(.locked) .dir-title { cursor: text; }
   .dir-title[contenteditable="true"]:focus, .dir-desc[contenteditable="true"]:focus { box-shadow: 0 0 0 3px var(--lime-ring); background: #fff; }
-  .dir-count { flex-shrink: 0; margin-left: auto; padding-top: 3px; font-size: 12px; font-weight: 600; color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .dir-count { flex-shrink: 0; margin-left: auto; padding-top: 4px; font-size: 12px; font-weight: 600; color: var(--text-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
   .dir-actions { display: inline-flex; gap: 2px; flex-shrink: 0; opacity: 0; transition: opacity .12s; }
   .dir-header:hover .dir-actions, .dir-actions:focus-within { opacity: 1; }
   .mini-btn {
     height: 24px; min-width: 24px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 0 6px;
     border: none; border-radius: 6px; background: transparent; font-size: 12px; font-weight: 600; color: var(--text-2); white-space: nowrap;
   }
-  .mini-btn:hover { background: var(--note-bg); color: var(--text); }
+  .mini-btn:hover { background: rgba(42,31,18,.07); color: var(--text); }
   .mini-btn.danger:hover { color: var(--danger); }
   .mini-btn svg { width: 14px; height: 14px; }
-  .dir-desc { margin: 0 4px 6px 28px; font-size: 12px; line-height: 1.45; color: var(--text-2); white-space: pre-wrap; overflow-wrap: break-word; outline: none; border-radius: 4px; }
+  .dir-desc {
+    margin: 0; padding: 8px 14px 2px 40px; font-size: 12px; line-height: 1.45; color: var(--text-2);
+    white-space: pre-wrap; overflow-wrap: break-word; outline: none; border-radius: 4px;
+  }
   .dir-desc:empty::before { content: attr(data-placeholder); color: var(--text-3); }
   .map-dir.is-collapsed .dir-body, .map-dir.is-collapsed .dir-desc { display: none; }
-  .dir-empty { padding: 0 0 2px 28px; font-size: 12px; color: var(--text-3); }
+  .dir-empty { padding: 9px 14px 10px 40px; font-size: 12px; color: var(--text-3); }
 
   /* ── Строки задач ── */
-  .task-list { background: var(--card); border: 1px solid var(--card-line); border-radius: 8px; }
-  .task-wrapper { position: relative; border-top: 1px solid var(--row-line); }
-  .task-wrapper:first-child { border-top: none; }
-  .task-wrapper:first-child .task-row { border-radius: 7px 7px 0 0; }
+  .task-list { position: relative; }
+  .task-wrapper { position: relative; }
+  .task-wrapper + .task-wrapper::before { content: ''; position: absolute; top: 0; left: 40px; right: 14px; height: 1px; background: var(--task-line); z-index: 1; }
+  .task-list > .task-wrapper:last-of-type > .task-row:not(.is-expanded),
+  .task-list > .task-wrapper:last-of-type > .task-detail { border-radius: 0 0 9px 9px; }
   .task-wrapper.dragging { opacity: .4; }
   .task-row {
-    position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; column-gap: 10px; align-items: start;
-    min-height: 38px; padding: 9px 12px; cursor: pointer; transition: background .12s;
+    position: relative; display: grid; grid-template-columns: 14px minmax(0, 1fr) 170px 92px; column-gap: 12px; align-items: start;
+    min-height: 40px; padding: 9px 14px 9px 40px; cursor: pointer; transition: background .12s;
   }
-  .task-row:hover { background: rgba(243,238,224,.5); }
+  .task-row:hover { background: rgba(243,238,224,.55); }
   .task-row.is-expanded { background: #FBF8EF; }
   .task-wrapper.is-current-match > .task-row { background: rgba(220,240,74,.2); }
   .drag-handle {
-    display: none; position: absolute; left: -21px; top: 9px; width: 16px; height: 20px; align-items: center; justify-content: center;
+    display: none; position: absolute; left: 14px; top: 10px; width: 16px; height: 20px; align-items: center; justify-content: center;
     color: var(--text-3); cursor: grab; opacity: 0; transition: opacity .12s;
   }
   body:not(.locked) .drag-handle { display: flex; }
@@ -416,35 +438,38 @@
   .status-mark.is-mini { width: 12px; height: 12px; margin-top: 0; pointer-events: none; }
   .status-mark.is-mini .i-check { width: 8px; height: 8px; }
   .task-main { min-width: 0; }
-  .task-title-full { font-size: 14px; font-weight: 500; line-height: 1.45; color: var(--text); overflow-wrap: break-word; }
+  .task-title-full { font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--text); overflow-wrap: break-word; }
   .task-title-full:empty::before { content: 'Задача…'; color: var(--text-3); }
   body.locked .task-title-full:empty::before { content: 'Без названия'; font-style: italic; }
   body:not(.locked) .task-title-full { cursor: text; }
   .task-wrapper.status-done .task-title-full { color: var(--done-text); }
   .task-row-input {
     display: none; width: calc(100% + 10px); margin: -2px -5px; padding: 1px 5px; border: none; border-radius: 6px; resize: none; overflow: hidden;
-    background: #fff; font-size: 14px; font-weight: 500; line-height: 1.45; color: var(--text); outline: none;
+    background: #fff; font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--text); outline: none;
     box-shadow: 0 0 0 1px #B9AD8F, 0 0 0 4px var(--lime-ring);
   }
   .task-row.editing .task-title-full { display: none; }
-  .row-comment { margin-top: 1px; font-size: 12px; line-height: 1.45; color: var(--text-2); overflow-wrap: break-word; }
+  /* комментарий — плашка под названием, по ширине текста */
+  .row-comment {
+    display: flex; align-items: flex-start; gap: 6px; width: fit-content; max-width: 100%; margin-top: 5px; padding: 3px 8px 3px 7px;
+    border-radius: 6px; background: var(--comment-bg); font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--comment-text);
+  }
+  .row-comment svg.i { width: 13px; height: 13px; margin-top: 2px; opacity: .8; }
+  .row-comment-text { min-width: 0; overflow-wrap: break-word; }
   .row-comment-more { margin-left: 6px; font-weight: 700; color: var(--text-3); white-space: nowrap; }
   .task-row.is-expanded .row-comment { display: none; }
-  .row-aside {
-    display: flex; align-items: baseline; justify-content: flex-end; flex-wrap: wrap; gap: 0 12px; max-width: 280px; padding-top: 2px;
-    font-size: 12px; line-height: 1.45; color: var(--text-2); text-align: right;
-  }
-  .row-people { min-width: 0; overflow-wrap: break-word; }
-  .row-date { white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .task-wrapper.status-done .row-aside { color: var(--text-3); }
+  /* ответственные и дата — отдельные колонки, одинаковые во всех карточках */
+  .row-aside { display: contents; font-size: 12px; line-height: 1.45; color: var(--text-2); }
+  .row-people { min-width: 0; padding-top: 2px; font-size: 12px; line-height: 1.45; color: var(--text-2); overflow-wrap: break-word; }
+  .row-date { padding-top: 2px; font-size: 12px; line-height: 1.45; color: var(--text-2); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .task-wrapper.status-done .row-people, .task-wrapper.status-done .row-date { color: var(--text-3); }
   .resp-chip { border-radius: 4px; }
   body:not(.locked) .resp-chip { cursor: pointer; }
   body:not(.locked) .resp-chip:hover { color: var(--danger); text-decoration: line-through; }
   body.locked .resp-chip { pointer-events: none; }
-  .task-list { position: relative; }
-  /* «+ задача» всплывает при наведении на направление и не занимает места в ленте */
+  /* «+ задача» всплывает при наведении на карточку и не занимает места в ленте */
   .add-row {
-    position: absolute; left: 20px; top: calc(100% - 6px); z-index: 3; height: 24px;
+    position: absolute; left: 40px; top: calc(100% - 11px); z-index: 3; height: 24px;
     display: inline-flex; align-items: center; gap: 6px; padding: 0 10px 0 8px; border: 1px solid var(--line-strong); border-radius: 999px;
     background: var(--card); font-size: 12px; font-weight: 600; color: var(--text-2); white-space: nowrap;
     opacity: 0; pointer-events: none; transition: opacity .12s, color .12s, border-color .12s;
@@ -452,18 +477,34 @@
   .add-row svg { width: 14px; height: 14px; }
   .map-dir:hover .add-row, .add-row:focus-visible { opacity: 1; pointer-events: auto; }
   .add-row:hover { color: var(--text); border-color: var(--line-hover); }
-  .task-list.is-empty .add-row { position: static; margin: 7px 8px; opacity: 1; pointer-events: auto; }
+  .task-list.is-empty .add-row { position: static; margin: 8px 8px 9px 40px; opacity: 1; pointer-events: auto; }
   .add-dir-btn, .add-block-btn {
     display: flex; align-items: center; gap: 8px; border: none; background: transparent; font-size: 12px; font-weight: 600; color: var(--text-3);
-    padding: 6px 8px; margin: 10px 0 0 20px; border-radius: 7px;
+    padding: 6px 8px; margin: 12px 0 0 8px; border-radius: 7px;
   }
   .add-dir-btn:hover, .add-block-btn:hover { color: var(--text); background: var(--note-bg); }
   .add-dir-btn svg, .add-block-btn svg { width: 14px; height: 14px; }
-  .add-block-btn { width: 100%; margin: 18px 0 0; justify-content: center; padding: 11px; border: 1px dashed var(--line-strong); border-radius: 8px; font-size: 13px; }
-  .drop-indicator { height: 2px; margin: -1px 12px; border-radius: 2px; background: var(--text); pointer-events: none; position: relative; z-index: 2; }
+  .add-block-btn { width: 100%; margin: 18px 0 0; justify-content: center; padding: 11px; border: 1px dashed var(--line-strong); border-radius: 10px; font-size: 13px; }
+  .drop-indicator { height: 2px; margin: -1px 14px -1px 40px; border-radius: 2px; background: var(--text); pointer-events: none; position: relative; z-index: 2; }
+
+  /* узкая колонка: ответственные и дата — под названием */
+  @container main (max-width: 720px) {
+    .task-row { grid-template-columns: 14px minmax(0, 1fr); padding: 9px 12px 9px 34px; }
+    .row-aside { display: flex; grid-column: 2; flex-wrap: wrap; gap: 0 10px; padding-top: 3px; }
+    .row-aside:not(:has(.resp-chip)):has(.row-date:empty) { display: none; }
+    .row-people, .row-date { padding-top: 0; text-align: left; }
+    .row-people:empty, .row-date:empty { display: none; }
+    .drag-handle { left: 10px; }
+    .task-wrapper + .task-wrapper::before { left: 34px; right: 12px; }
+    .dir-desc, .dir-empty { padding-left: 34px; }
+    .add-row { left: 34px; }
+    .task-list.is-empty .add-row { margin-left: 34px; }
+    .task-detail { padding-left: 34px !important; padding-right: 12px !important; }
+    .drop-indicator { margin-left: 34px; margin-right: 12px; }
+  }
 
   /* ── Раскрытая задача ── */
-  .task-detail { padding: 2px 12px 12px 36px; background: #FBF8EF; border-top: 1px dashed var(--row-line); }
+  .task-detail { padding: 2px 14px 12px 66px; background: #FBF8EF; border-top: 1px dashed var(--task-line); }
   .detail-meta { padding-top: 8px; font-size: 12px; color: var(--text-2); }
   body:not(.locked) .detail-meta { display: none; }
   .detail-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 4px; margin: 6px 0 0 -8px; }
@@ -579,6 +620,16 @@
   .modal-confirm.danger:hover { background: #9C2D18; }
   .modal.shake { animation: modal-shake .32s; }
   @keyframes modal-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .imp-table { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .imp-row { display: flex; flex-direction: column; gap: 1px; padding: 8px 10px; border-radius: 8px; background: var(--note-bg); font-size: 12px; color: var(--text-2); }
+  .imp-row b { font-size: 13px; color: var(--text); }
+  .imp-row.is-loss { background: rgba(184,55,31,.08); }
+  .imp-warn { margin-top: 10px; font-size: 13px; font-weight: 600; line-height: 1.5; color: var(--danger); }
+  .copy-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .copy-row { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; background: var(--note-bg); }
+  .copy-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--text-2); overflow-wrap: anywhere; }
+  .copy-info b { font-size: 12px; color: var(--text); }
+  .copy-dl { flex-shrink: 0; height: 32px; font-size: 12px; }
   .form-label { display: block; margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--text-2); }
   .form-input {
     width: 100%; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: #fff;
@@ -629,11 +680,7 @@
     .right-panel { padding: 0 12px; }
     .map-feed { padding-bottom: 50vh; }
     .block-plate { padding-left: 4px; }
-    .plate-title { font-size: 15px; }
-    .task-row { grid-template-columns: 14px minmax(0, 1fr); padding: 9px 10px; }
-    .row-aside { grid-column: 2; justify-content: flex-start; text-align: left; max-width: none; padding-top: 1px; }
-    .row-aside:empty { display: none; }
-    .task-detail { padding: 2px 10px 12px 34px; }
+    .plate-title { font-size: 16px; }
     .dir-actions { opacity: 1; }
     .resp-icon-input { width: 170px; font-size: 16px; }
     .log-input, .log-edit-area, .form-input, .task-row-input { font-size: 16px; }
@@ -648,7 +695,7 @@
     .modal { padding: 18px 16px 14px; }
   }
   @media (hover: none) {
-    .add-row { position: static; margin: 7px 8px 8px; opacity: 1; pointer-events: auto; }
+    .add-row { position: static; margin: 8px 8px 9px 40px; opacity: 1; pointer-events: auto; }
     .dir-actions, .log-entry-actions { opacity: 1; }
   }
 
@@ -741,6 +788,7 @@
           <button type="button" class="export-menu-item" role="menuitem" id="export-block-item" onclick="printPDF('block');closeExportMenu()"><span data-icon="printer"></span><span class="emi-text">PDF — текущий блок<span class="emi-sub" id="export-block-sub">Доступно в режиме «Блок»</span></span></button>
           <button type="button" class="export-menu-item" role="menuitem" onclick="exportData();closeExportMenu()"><span data-icon="file"></span><span class="emi-text">Отчёт .txt<span class="emi-sub">Текущий сезон</span></span></button>
           <button type="button" class="export-menu-item" role="menuitem" onclick="exportJSON();closeExportMenu()"><span data-icon="archive"></span><span class="emi-text">Резервная копия .json<span class="emi-sub">Все сезоны</span></span></button>
+          <button type="button" class="export-menu-item" role="menuitem" onclick="openBrowserCopies()"><span data-icon="history"></span><span class="emi-text">Копии в браузере<span class="emi-sub">Старые данные и резервные копии</span></span></button>
           <div class="export-sep edit-only"></div>
           <button type="button" class="export-menu-item edit-only" role="menuitem" onclick="importJSON();closeExportMenu()"><span data-icon="upload"></span><span class="emi-text">Восстановить из .json<span class="emi-sub">Подходят и старые резервные копии</span></span></button>
         </div>
@@ -777,9 +825,13 @@ const STORAGE_KEY = 'g8-tracker-v2';
 const VIEW_KEY = 'g8-ui-view';
 const SEASON_KEY = 'g8-ui-season';
 const PANEL_W_KEY = 'g8-ui-panel-width';
-const STATUS_BACKUP_KEY = 'g8-tracker-v2-backup-statuses';
+const BACKUP_PREFIX = 'g8-tracker-v2-backup-';   // резервные копии: только добавляются, никогда не перезаписываются
 const TASK_STATUSES = ['active', 'done'];
 const STATUS_NAMES = { active: 'В работе', done: 'Завершена' };
+// значения, которые при миграции считаются «Завершена»; всё остальное — «В работе»
+const DONE_STATUS_VALUES = ['done', 'готово', 'завершена', 'завершено', 'выполнено', 'completed', 'complete', 'finished'];
+let storageLocked = false;   // сохранённые данные не прочитались — поверх них ничего не пишем
+let storageLockInfo = '';
 const MIGRATED_SEASON_ID = 's2026';
 const MIGRATED_SEASON_NAME = '2026';
 
@@ -862,7 +914,7 @@ function sanitizeBlocks(blocks) {
       d.tasks.forEach(t => {
         t.id = fixId(t.id);
         // два статуса: «Завершена» остаётся, всё остальное — «В работе»
-        if (!TASK_STATUSES.includes(t.status)) t.status = t.status === 'done' ? 'done' : 'active';
+        if (!TASK_STATUSES.includes(t.status)) t.status = normalizeStatus(t.status);
       });
     });
   });
@@ -872,6 +924,9 @@ function isValidDb(d) {
   return !!d && Array.isArray(d.seasons) && d.seasons.length > 0 &&
     d.seasons.every(s => s && typeof s === 'object' && Array.isArray(s.blocks));
 }
+function normalizeStatus(v) {
+  return DONE_STATUS_VALUES.includes(String(v ?? '').trim().toLowerCase()) ? 'done' : 'active';
+}
 function normalizeDb(d) {
   const ids = new Set();
   d.seasons.forEach((s, i) => {
@@ -880,15 +935,31 @@ function normalizeDb(d) {
     s.name = (typeof s.name === 'string' && s.name.trim()) ? s.name.trim().slice(0, 40) : `Сезон ${i + 1}`;
     sanitizeBlocks(s.blocks);
   });
-  return { version: 2, seasons: d.seasons };
+  // неизвестные поля верхнего уровня сохраняем
+  const { exportedAt, ...rest } = d;
+  return { ...rest, version: 2, seasons: d.seasons };
 }
 function needsStatusMigration(seasons) {
   return (seasons || []).some(se => (se.blocks || []).some(b => (b.directions || []).some(d =>
     (d.tasks || []).some(t => !TASK_STATUSES.includes(t.status)))));
 }
-// копия данных до перехода на два статуса — один раз, повторно не перезаписывается
-function backupBeforeStatusMigration(raw) {
-  if (lsGet(STATUS_BACKUP_KEY) === null) lsSet(STATUS_BACKUP_KEY, raw);
+function backupStamp() {
+  const d = new Date(), p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+}
+// копия в новый ключ с датой; существующие ключи не перезаписываются.
+// Если точно такая же копия уже есть — новую не создаём (хранилище не забивается одинаковыми копиями)
+function saveBackupCopy(reason, raw) {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(BACKUP_PREFIX) && localStorage.getItem(k) === raw) return k;
+    }
+  } catch (e) {}
+  const base = `${BACKUP_PREFIX}${reason}-${backupStamp()}`;
+  let key = base, n = 2;
+  while (lsGet(key) !== null) key = `${base}-${n++}`;
+  return lsSet(key, raw) ? key : null;
 }
 function seasonFromBlocks(blocks) {
   return { id: MIGRATED_SEASON_ID, name: MIGRATED_SEASON_NAME, blocks: sanitizeBlocks(blocks) };
@@ -897,32 +968,47 @@ function seasonFromBlocks(blocks) {
 async function loadDb() {
   const raw2 = lsGet(STORAGE_KEY);
   if (raw2) {
-    try {
-      const d = JSON.parse(raw2);
-      if (isValidDb(d)) {
-        const migrate = needsStatusMigration(d.seasons);
-        if (migrate) backupBeforeStatusMigration(raw2);
+    let d = null;
+    try { d = JSON.parse(raw2); } catch (e) {}
+    if (isValidDb(d)) {
+      if (needsStatusMigration(d.seasons)) {
+        // миграция статусов: сначала копия, без копии изменённые данные не записываем
+        const backed = saveBackupCopy('statuses', raw2);
         const nd = normalizeDb(d);
-        if (migrate) lsSet(STORAGE_KEY, JSON.stringify(nd));
+        if (backed) lsSet(STORAGE_KEY, JSON.stringify(nd));
         return nd;
       }
+      return normalizeDb(d);
+    }
+    // нечитаемые данные: откладываем копию и НИЧЕГО не пишем поверх, пока не восстановят из бэкапа
+    let key = '';
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith(`${STORAGE_KEY}-unreadable-`) && localStorage.getItem(k) === raw2) { key = k; break; }
+      }
     } catch (e) {}
-    // нечитаемые данные не затираем — откладываем копию
-    lsSet(`${STORAGE_KEY}-unreadable-${Date.now()}`, raw2);
+    if (!key) { key = `${STORAGE_KEY}-unreadable-${Date.now()}`; lsSet(key, raw2); }
+    storageLocked = true;
+    storageLockInfo = key;
+    return { version: 2, seasons: [{ id: MIGRATED_SEASON_ID, name: MIGRATED_SEASON_NAME, blocks: [] }] };
   }
   const raw1 = lsGet(STORAGE_KEY_V1);
   if (raw1) {
-    try {
-      const d = JSON.parse(raw1);
-      if (d && Array.isArray(d.blocks)) {
-        const before = { version: 2, seasons: [{ id: MIGRATED_SEASON_ID, name: MIGRATED_SEASON_NAME, blocks: d.blocks }] };
-        if (needsStatusMigration(before.seasons)) backupBeforeStatusMigration(JSON.stringify(before));
-        const migrated = { version: 2, seasons: [seasonFromBlocks(d.blocks)] };
-        lsSet(STORAGE_KEY, JSON.stringify(migrated));
-        return migrated;
-      }
-    } catch (e) {}
+    let d = null;
+    try { d = JSON.parse(raw1); } catch (e) {}
+    if (d && Array.isArray(d.blocks)) {
+      const before = JSON.stringify({ version: 2, seasons: [{ id: MIGRATED_SEASON_ID, name: MIGRATED_SEASON_NAME, blocks: d.blocks }] });
+      if (needsStatusMigration(JSON.parse(before).seasons)) saveBackupCopy('statuses', before);
+      const migrated = { version: 2, seasons: [seasonFromBlocks(d.blocks)] };
+      lsSet(STORAGE_KEY, JSON.stringify(migrated));
+      return migrated;
+    }
+    storageLocked = true;
+    storageLockInfo = STORAGE_KEY_V1;
+    return { version: 2, seasons: [{ id: MIGRATED_SEASON_ID, name: MIGRATED_SEASON_NAME, blocks: [] }] };
   }
+  // хранилище пустое — только тогда стартовые данные
   try {
     const r = await fetch('data.json?v=' + Date.now());
     if (r.ok) {
@@ -936,12 +1022,20 @@ async function loadDb() {
 
 let lastSaveErrorAt = 0;
 function persist() {
+  if (storageLocked) {
+    if (Date.now() - lastSaveErrorAt > 15000) { lastSaveErrorAt = Date.now(); showStorageLockedNotice(); }
+    return false;
+  }
   if (lsSet(STORAGE_KEY, JSON.stringify(db))) return true;
   if (Date.now() - lastSaveErrorAt > 15000) {
     lastSaveErrorAt = Date.now();
     showAlert('Ошибка сохранения', 'Хранилище браузера переполнено. Сделайте резервную копию через Экспорт → Резервная копия .json');
   }
   return false;
+}
+function showStorageLockedNotice() {
+  showAlert('Сохранённые данные не прочитались',
+    `Ничего не перезаписано: исходные данные лежат в браузере (ключ <strong>${esc(storageLockInfo)}</strong>, их можно скачать в Экспорт → Копии в браузере). Восстановите данные через Экспорт → Восстановить из .json — до этого изменения не сохраняются.`);
 }
 function saveData() {
   persist();
@@ -971,6 +1065,7 @@ async function init() {
   await document.fonts.ready;
   appReady = true;
   applyLockState();
+  if (storageLocked) showStorageLockedNotice();
 }
 let appReady = false;
 let filter = { responsible: 'all', status: 'all' };
@@ -1935,6 +2030,35 @@ function normHex(c) {
   return '#' + (m[1].length === 3 ? m[1].split('').map(x => x + x).join('') : m[1]);
 }
 function blockColorOf(block) { return normHex(block && block.color) || DEFAULT_BLOCK_COLOR; }
+function hexToHsl(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h = 0, s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h /= 6;
+  }
+  return [h, s, l];
+}
+function hslToHex(h, s, l) {
+  const f = n => {
+    const k = (n + h * 12) % 12;
+    const a = s * Math.min(l, 1 - l);
+    return Math.round((l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))) * 255).toString(16).padStart(2, '0');
+  };
+  return '#' + f(0) + f(8) + f(4);
+}
+// цвет плашки блока: бледные и приглушённые оттенки делаются насыщенными (только отображение)
+function vividColor(hex) {
+  let [h, s, l] = hexToHsl(normHex(hex) || DEFAULT_BLOCK_COLOR);
+  if (l <= 0.58) return normHex(hex) || DEFAULT_BLOCK_COLOR;
+  if (s > 0.04 && s < 0.5) s = 0.5;
+  return hslToHex(h, s, 0.58);
+}
 function paletteName(hex) {
   const p = PALETTE.find(p => p.color === normHex(hex));
   return p ? p.name : 'Свой цвет';
@@ -1976,7 +2100,7 @@ let paletteRenderRaf = 0;
 let palettePersistTimer = null;
 
 function paletteSwatch(blockId, color, name, active, extraClass = '') {
-  return `<button type="button" class="palette-swatch${active ? ' active' : ''}${extraClass}" style="--sw:${color}"
+  return `<button type="button" class="palette-swatch${active ? ' active' : ''}${extraClass}" style="--sw:${vividColor(color)}"
     data-name="${esc(name)}" data-hex="${color}" aria-label="${esc(name)}" aria-pressed="${active}"
     onclick="selectBlockColor('${blockId}','${color}')"
     onmouseenter="paletteHover(this)" onmouseleave="paletteHover(null)" onfocus="paletteHover(this)" onblur="paletteHover(null)"></button>`;
@@ -2162,13 +2286,30 @@ document.addEventListener('click', e => {
 
 // ── Export JSON (backup): все сезоны ─────────────────────────────────────────
 function exportJSON() {
-  const payload = { version: 2, exportedAt: new Date().toISOString(), seasons: db.seasons };
+  const payload = { ...db, version: 2, exportedAt: new Date().toISOString(), seasons: db.seasons };
   downloadBlob(JSON.stringify(payload, null, 2), 'application/json;charset=utf-8', `g8-tracker-backup-${new Date().toISOString().slice(0,10)}.json`);
 }
 
 function describeSeasons(seasons) {
   const names = [...seasons].map(s => String(s.name)).sort((a, b) => a.localeCompare(b, 'ru', { numeric: true }));
   return `${seasons.length} ${plural(seasons.length, 'сезон', 'сезона', 'сезонов')} (${names.map(esc).join(', ')})`;
+}
+function rawSeasonStats(blocks) {
+  let dirs = 0, tasks = 0;
+  (blocks || []).forEach(b => (b.directions || []).forEach(d => { dirs++; tasks += (d.tasks || []).length; }));
+  return { blocks: (blocks || []).length, dirs, tasks };
+}
+function statsText(st) {
+  return `${st.blocks} ${plural(st.blocks, 'блок', 'блока', 'блоков')}, ${st.dirs} ${plural(st.dirs, 'направление', 'направления', 'направлений')}, ${st.tasks} ${plural(st.tasks, 'задача', 'задачи', 'задач')}`;
+}
+// сравнение «сейчас → после импорта» по сезонам; предупреждаем, если что-то пропадёт или станет меньше
+function importDiffHtml(pairs) {
+  const rows = pairs.map(({ name, cur, inc }) => {
+    const lost = cur && (!inc || inc.tasks < cur.tasks || inc.blocks < cur.blocks || inc.dirs < cur.dirs);
+    return `<div class="imp-row${lost ? ' is-loss' : ''}"><b>${esc(name)}</b><span>сейчас: ${cur ? statsText(cur) : '—'}</span><span>после: ${inc ? statsText(inc) : 'сезона не будет'}</span></div>`;
+  }).join('');
+  const losses = pairs.filter(x => x.cur && (!x.inc || x.inc.tasks < x.cur.tasks || x.inc.blocks < x.cur.blocks || x.inc.dirs < x.cur.dirs));
+  return `<div class="imp-table">${rows}</div>${losses.length ? `<div class="imp-warn">Внимание: в ${losses.map(x => `«${esc(x.name)}»`).join(', ')} станет меньше данных, чем сейчас. Перед заменой текущие данные будут сохранены в браузере (Экспорт → Копии в браузере).</div>` : '<div class="modal-sub">Перед заменой текущие данные будут сохранены в браузере.</div>'}`;
 }
 
 function importJSON() {
@@ -2191,11 +2332,22 @@ function importJSON() {
 // Новый формат ({seasons}) заменяет все сезоны; старый ({blocks}) загружается в текущий сезон
 function importBackupData(data) {
   if (isValidDb(data)) {
+    const names = [...new Set([...db.seasons.map(x => x.name), ...data.seasons.map(x => String(x.name || ''))])];
+    const pairs = names.map(name => {
+      const c = db.seasons.find(x => x.name === name);
+      const i = data.seasons.find(x => String(x.name || '') === name);
+      return { name: c ? seasonLabel(c) : `Сезон ${name}`, cur: c ? rawSeasonStats(c.blocks) : null, inc: i ? rawSeasonStats(i.blocks) : null };
+    });
     showConfirm(
-      `Загрузить резервную копию со всеми сезонами?<br><span class="modal-sub">Сейчас: ${describeSeasons(db.seasons)}.<br>В файле: ${describeSeasons(data.seasons)}.<br>Текущие данные будут заменены.</span>`,
+      `Загрузить резервную копию со всеми сезонами? Текущие данные будут заменены.${importDiffHtml(pairs)}`,
       () => {
+        // копия того, что реально сохранено в браузере (пустое хранилище копировать нечего)
+        const saved = lsGet(STORAGE_KEY);
+        const backed = (storageLocked || saved === null) ? true : saveBackupCopy('import', saved);
+        if (!backed) { showAlert('Импорт отменён', 'Не удалось сохранить копию текущих данных перед импортом (хранилище браузера переполнено). Сначала сделайте Экспорт → Резервная копия .json.'); return; }
         const prevId = state.id, prevName = state.name;
         db = normalizeDb(JSON.parse(JSON.stringify(data)));
+        storageLocked = false;
         state = db.seasons.find(s => s.id === prevId) || db.seasons.find(s => s.name === prevName) || sortedSeasons()[sortedSeasons().length - 1];
         lsSet(SEASON_KEY, state.id);
         undoStacks.clear();
@@ -2207,16 +2359,22 @@ function importBackupData(data) {
         renderSeasonMenu();
         showToast(`Загружено: ${describeSeasons(db.seasons)}`, null);
       },
-      { title: 'Восстановить из копии', confirmText: 'Загрузить' }
+      { title: 'Восстановить из копии', confirmText: 'Заменить данные' }
     );
     return;
   }
   if (data && Array.isArray(data.blocks)) {
+    const cur = rawSeasonStats(state.blocks), inc = rawSeasonStats(data.blocks);
     showConfirm(
-      `Загрузить резервную копию в <strong>${esc(seasonLabel(state))}</strong>?<br><span class="modal-sub">Файл старого формата — один набор блоков. Данные текущего сезона будут заменены (${state.blocks.length} → ${data.blocks.length} ${plural(data.blocks.length, 'блок', 'блока', 'блоков')}). Другие сезоны не изменятся.</span>`,
+      `Загрузить резервную копию в <strong>${esc(seasonLabel(state))}</strong>? Это файл старого формата — один набор блоков; данные текущего сезона будут заменены, другие сезоны не изменятся.${importDiffHtml([{ name: seasonLabel(state), cur, inc }])}`,
       () => {
+        // копия того, что реально сохранено в браузере (пустое хранилище копировать нечего)
+        const saved = lsGet(STORAGE_KEY);
+        const backed = (storageLocked || saved === null) ? true : saveBackupCopy('import', saved);
+        if (!backed) { showAlert('Импорт отменён', 'Не удалось сохранить копию текущих данных перед импортом (хранилище браузера переполнено). Сначала сделайте Экспорт → Резервная копия .json.'); return; }
         pushUndo();
         state.blocks = sanitizeBlocks(JSON.parse(JSON.stringify(data.blocks)));
+        storageLocked = false;
         expandedTasks.clear();
         openHistories.clear();
         applySeasonView();
@@ -2224,11 +2382,54 @@ function importBackupData(data) {
         renderAll();
         showToast(`Копия загружена в ${seasonLabel(state)}`);
       },
-      { title: 'Восстановить из копии', confirmText: 'Загрузить' }
+      { title: 'Восстановить из копии', confirmText: 'Заменить данные' }
     );
     return;
   }
   showAlert('Файл не подходит', 'Это не резервная копия G8 Tracker.');
+}
+
+// ── Копии в браузере: просмотр и скачивание (ничего не меняет) ──────────────
+function browserCopyKeys() {
+  const keys = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('g8-tracker') && k !== STORAGE_KEY) keys.push(k);
+    }
+  } catch (e) {}
+  return keys.sort().reverse();
+}
+function describeRawCopy(raw) {
+  try {
+    const d = JSON.parse(raw);
+    if (Array.isArray(d && d.seasons)) return d.seasons.map(se => `${esc(String(se.name))}: ${statsText(rawSeasonStats(se.blocks))}`).join('<br>');
+    if (Array.isArray(d && d.blocks)) return `Один набор блоков: ${statsText(rawSeasonStats(d.blocks))}`;
+    return 'Неизвестный формат';
+  } catch (e) { return 'Не читается как JSON — можно скачать как есть'; }
+}
+function openBrowserCopies() {
+  closeExportMenu();
+  const keys = browserCopyKeys();
+  const rows = keys.map(k => {
+    const raw = lsGet(k) || '';
+    return `<div class="copy-row">
+      <div class="copy-info"><b>${esc(k)}</b><span>${describeRawCopy(raw)}</span><span>${Math.max(1, Math.round(raw.length / 1024))} КБ</span></div>
+      <button type="button" class="modal-cancel copy-dl" onclick="downloadBrowserCopy(${jsStr(k)})">Скачать .json</button>
+    </div>`;
+  }).join('');
+  openModal({
+    title: 'Копии в браузере',
+    body: `<div class="modal-text">Старые данные и резервные копии, которые хранятся в этом браузере. Скачанный файл можно загрузить через «Восстановить из .json».</div>
+      <div class="copy-list">${rows || '<div class="modal-sub">Копий пока нет.</div>'}</div>`,
+    confirmText: 'Закрыть',
+    hideCancel: true
+  });
+}
+function downloadBrowserCopy(key) {
+  const raw = lsGet(key);
+  if (raw === null) return;
+  downloadBlob(raw, 'application/json;charset=utf-8', `${key}.json`);
 }
 
 
@@ -2252,7 +2453,7 @@ function populatePrintArea(scope) {
     </span>
   </header>`;
   blocks.forEach(b => {
-    const color = blockColorOf(b);
+    const color = vividColor(blockColorOf(b));
     const c = getBlockColors(color);
     const bt = b.directions.reduce((a, d) => a + d.tasks.length, 0);
     html += `<section class="pr-block">
@@ -2935,7 +3136,7 @@ function renderNav() {
   const dimOn = filtersActive();
   let html = `<div class="nav-blocks-container" ondragover="blocksListDragOver(event)" ondrop="blocksListDrop(event)">`;
   state.blocks.forEach(block => {
-    const color = blockColorOf(block);
+    const color = vividColor(blockColorOf(block));
     const isFocus = view.mode === 'block' && view.block === block.id;
     const folded = tocFold.has(block.id);
     html += `<div class="toc-block${folded ? ' is-toc-collapsed' : ''}" data-block="${block.id}" draggable="${editMode}" ondragstart="blockDragStart(event,'${block.id}')" ondragend="blockDragEnd(event,'${block.id}')">
@@ -2983,14 +3184,14 @@ function renderRightPanel() {
     html += `<div class="focus-bar">
       <button type="button" class="focus-back" onclick="showAllMap('${fb.id}')" title="Вся карта (Esc)">${ICONS.arrowLeft}<span>Вся карта</span></button>
       <span class="focus-sep">/</span>
-      <span class="focus-name" id="focus-name" style="--bc:${blockColorOf(fb)}">${fb.title ? esc(fb.title) : 'Без названия'}</span>
+      <span class="focus-name" id="focus-name" style="--bc:${vividColor(blockColorOf(fb))}">${fb.title ? esc(fb.title) : 'Без названия'}</span>
     </div>`;
   }
   let shownTasks = 0, totalTasks = 0;
   const blocks = scopeBlocks();
   let blocksHtml = '';
   blocks.forEach(block => {
-    const color = blockColorOf(block);
+    const color = vividColor(blockColorOf(block));
     const c = getBlockColors(color);
     const blockTotal = block.directions.reduce((a, d) => a + d.tasks.length, 0);
     totalTasks += blockTotal;
@@ -3016,7 +3217,7 @@ function renderRightPanel() {
       </div>
       <div class="block-body">`;
     if (!visibleDirs.length) {
-      blocksHtml += `<div class="dir-empty" style="padding-top:10px">${filtering ? 'Нет задач по фильтру' : 'В блоке пока нет направлений'}</div>`;
+      blocksHtml += `<div class="block-empty">${filtering ? 'Нет задач по фильтру' : 'В блоке пока нет направлений'}</div>`;
     }
     visibleDirs.forEach(({ d, tasks }) => {
       const dirHit = searching && dirMatchesSearch(d);
@@ -3081,7 +3282,7 @@ function rowCommentHtml(log) {
     }
   }
   const text = String(comments[idx].text || '').replace(/\s*\n\s*/g, ' ');
-  return `<div class="row-comment">${hl(text)}${comments.length > 1 ? `<span class="row-comment-more" title="Всего комментариев: ${comments.length}">+${comments.length - 1}</span>` : ''}</div>`;
+  return `<div class="row-comment">${ICONS.message}<span class="row-comment-text">${hl(text)}${comments.length > 1 ? `<span class="row-comment-more" title="Всего комментариев: ${comments.length}">+${comments.length - 1}</span>` : ''}</span></div>`;
 }
 
 function renderTaskRow(blockId, dirId, task) {
@@ -3114,7 +3315,7 @@ function renderTaskRow(blockId, dirId, task) {
         <textarea class="task-row-input" id="task-inp-${task.id}" rows="1" placeholder="Задача…" onblur="endEditTitle('${task.id}')" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" oninput="autoGrow(this);updateTaskText('${blockId}','${dirId}','${task.id}',this.value)">${esc(task.text)}</textarea>
         ${rowCommentHtml(log)}
       </div>
-      <div class="row-aside">${resp.length ? `<span class="row-people task-row-responsible">${people}</span>` : ''}${task.deadline ? `<span class="row-date">${esc(formatShortDate(task.deadline))}</span>` : ''}</div>
+      <div class="row-aside"><span class="row-people task-row-responsible">${people}</span><span class="row-date">${task.deadline ? esc(formatShortDate(task.deadline)) : ''}</span></div>
     </div>
     <div class="task-detail" id="detail-${task.id}" style="display:${expanded ? 'block' : 'none'}">
       <div class="detail-meta">${statusText}${task.deadline ? ` · срок ${esc(formatDate(task.deadline))}` : ''}${comments.length ? ` · ${comments.length} ${plural(comments.length, 'комментарий', 'комментария', 'комментариев')}` : ''}</div>
